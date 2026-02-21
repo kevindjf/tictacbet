@@ -84,7 +84,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                     ref.read(onboardingNotifierProvider.notifier).next();
                   },
                   child: Text(
-                    currentStep.isLast
+                    currentStep == OnboardingStep.streaks
                         ? context.l10n.getStarted
                         : context.l10n.next,
                   ),

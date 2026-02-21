@@ -464,12 +464,6 @@ abstract class AppLocalizations {
   /// **'Take turns placing your marks to win!'**
   String get onboardingGame;
 
-  /// No description provided for @onboardingBetting.
-  ///
-  /// In en, this message translates to:
-  /// **'Now let\'s spice things up. You have 1000 coins!'**
-  String get onboardingBetting;
-
   /// No description provided for @onboardingStreaks.
   ///
   /// In en, this message translates to:

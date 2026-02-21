@@ -202,10 +202,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get onboardingGame => 'Joue à tour de rôle pour aligner 3 symboles !';
 
   @override
-  String get onboardingBetting =>
-      'Maintenant, pimentons les choses. Tu as 1000 coins !';
-
-  @override
   String get onboardingStreaks =>
       'Enchaîne les victoires pour multiplier tes gains !';
 

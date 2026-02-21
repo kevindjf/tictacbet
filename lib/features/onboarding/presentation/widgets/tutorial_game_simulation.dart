@@ -65,11 +65,13 @@ class _TutorialGameSimulationState extends State<TutorialGameSimulation> {
   void _launchCoachMark() {
     if (!mounted) return;
 
+    final theme = Theme.of(context);
+
     TutorialCoachMark(
-      targets: _buildTargets(),
-      colorShadow: Colors.black,
+      targets: _buildTargets(theme),
+      colorShadow: theme.colorScheme.scrim,
       opacityShadow: 0.88,
-      paddingFocus: 10,
+      paddingFocus: AppDimensions.spacingS,
       textSkip: context.l10n.skip,
       onClickTarget: (target) {
         switch (target.identify) {
@@ -111,11 +113,13 @@ class _TutorialGameSimulationState extends State<TutorialGameSimulation> {
     ).show(context: context);
   }
 
-  List<TargetFocus> _buildTargets() {
-    final textStyle = const TextStyle(color: Colors.white, fontSize: 15);
-    final titleStyle = const TextStyle(
-      color: Colors.white,
-      fontSize: 20,
+  List<TargetFocus> _buildTargets(ThemeData theme) {
+    final overlayTextColor = theme.colorScheme.onInverseSurface;
+    final textStyle = theme.textTheme.bodyMedium!.copyWith(
+      color: overlayTextColor,
+    );
+    final titleStyle = theme.textTheme.titleMedium!.copyWith(
+      color: overlayTextColor,
       fontWeight: FontWeight.bold,
     );
 

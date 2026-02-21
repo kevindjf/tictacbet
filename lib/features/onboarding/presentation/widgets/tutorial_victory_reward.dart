@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
-import 'package:tic_tac_bet/core/theme/betclic_theme_extension.dart';
 import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
+import 'package:tic_tac_bet/features/onboarding/presentation/widgets/victory_coin_section.dart';
+import 'package:tic_tac_bet/features/onboarding/presentation/widgets/victory_trophy_section.dart';
 
 class TutorialVictoryReward extends StatefulWidget {
   const TutorialVictoryReward({super.key, required this.onComplete});
@@ -41,8 +42,6 @@ class _TutorialVictoryRewardState extends State<TutorialVictoryReward>
 
   @override
   Widget build(BuildContext context) {
-    final betclic = Theme.of(context).extension<BetclicTheme>()!;
-
     return Container(
       color: Theme.of(context).scaffoldBackgroundColor,
       child: SafeArea(
@@ -52,75 +51,9 @@ class _TutorialVictoryRewardState extends State<TutorialVictoryReward>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Spacer(),
-              Icon(Icons.emoji_events, size: 100, color: betclic.coinColor)
-                  .animate()
-                  .scale(
-                    begin: const Offset(0, 0),
-                    duration: const Duration(milliseconds: 600),
-                    curve: Curves.elasticOut,
-                  ),
-              const SizedBox(height: AppDimensions.spacingL),
-              Text(
-                context.l10n.tutorialVictoryTitle,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: betclic.playerXColor,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ).animate().fadeIn(
-                delay: const Duration(milliseconds: 200),
-                duration: const Duration(milliseconds: 400),
-              ),
+              const VictoryTrophySection(),
               const SizedBox(height: AppDimensions.spacingXL),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(
-                  5,
-                  (i) => Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppDimensions.spacingS,
-                    ),
-                    child: Icon(
-                      Icons.monetization_on,
-                      size: 32,
-                      color: betclic.coinColor,
-                    )
-                        .animate(delay: Duration(milliseconds: i * 100))
-                        .slideY(
-                          begin: -1.5,
-                          duration: const Duration(milliseconds: 400),
-                          curve: Curves.easeOut,
-                        )
-                        .fadeIn(),
-                  ),
-                ),
-              ).animate().fadeIn(
-                delay: const Duration(milliseconds: 400),
-              ),
-              const SizedBox(height: AppDimensions.spacingL),
-              AnimatedBuilder(
-                animation: _coinAnimation,
-                builder: (context, _) {
-                  return Text(
-                    context.l10n.tutorialRewardCoins(_coinAnimation.value),
-                    style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                      color: betclic.coinColor,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: AppDimensions.spacingS),
-              Text(
-                context.l10n.tutorialRewardSubtitle,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-                textAlign: TextAlign.center,
-              ).animate().fadeIn(
-                delay: const Duration(milliseconds: 600),
-                duration: const Duration(milliseconds: 400),
-              ),
+              VictoryCoinSection(coinAnimation: _coinAnimation),
               const Spacer(),
               SizedBox(
                 width: double.infinity,

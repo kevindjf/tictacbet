@@ -202,10 +202,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingGame => 'Take turns placing your marks to win!';
 
   @override
-  String get onboardingBetting =>
-      'Now let\'s spice things up. You have 1000 coins!';
-
-  @override
   String get onboardingStreaks => 'Chain victories to multiply your gains!';
 
   @override
