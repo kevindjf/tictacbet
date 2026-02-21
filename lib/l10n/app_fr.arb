@@ -1,0 +1,130 @@
+{
+  "@@locale": "fr",
+  "appTitle": "Tic Tac Bet",
+  "training": "Entraînement",
+  "trainingDescription": "Entraîne-toi sans risque",
+  "competition": "Compétition",
+  "competitionDescription": "Mise des coins et affronte des joueurs",
+  "vsAi": "vs IA",
+  "vsLocal": "vs Joueur local",
+  "easy": "Facile",
+  "medium": "Moyen",
+  "hard": "Difficile",
+  "difficulty": "Difficulté",
+  "yourTurn": "À toi de jouer !",
+  "opponentTurn": "Tour de l'adversaire",
+  "playerXTurn": "Tour du joueur X",
+  "playerOTurn": "Tour du joueur O",
+  "youWin": "Victoire !",
+  "youLose": "Défaite !",
+  "draw": "Égalité !",
+  "playerXWins": "Joueur X gagne !",
+  "playerOWins": "Joueur O gagne !",
+  "playAgain": "Rejouer",
+  "backToHome": "Retour à l'accueil",
+  "coins": "{amount} coins",
+  "@coins": {
+    "placeholders": {
+      "amount": { "type": "int" }
+    }
+  },
+  "betAmount": "Mise : {amount} coins",
+  "@betAmount": {
+    "placeholders": {
+      "amount": { "type": "int" }
+    }
+  },
+  "balance": "Solde",
+  "streak": "Série",
+  "multiplier": "x{value}",
+  "@multiplier": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "streakCount": "{count} victoires",
+  "@streakCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "placeBet": "Miser",
+  "minimumBet": "Mise minimum : {amount}",
+  "@minimumBet": {
+    "placeholders": {
+      "amount": { "type": "int" }
+    }
+  },
+  "insufficientBalance": "Solde insuffisant",
+  "history": "Historique",
+  "statistics": "Statistiques",
+  "noGamesYet": "Aucune partie jouée",
+  "winRate": "Taux de victoire",
+  "gamesPlayed": "Parties jouées",
+  "wins": "Victoires",
+  "losses": "Défaites",
+  "draws": "Égalités",
+  "settings": "Paramètres",
+  "theme": "Thème",
+  "darkMode": "Mode sombre",
+  "lightMode": "Mode clair",
+  "language": "Langue",
+  "replayTutorial": "Rejouer le tutoriel",
+  "lobby": "Lobby",
+  "createMatch": "Créer un match",
+  "proposeMatch": "Proposer un match",
+  "acceptMatch": "Accepter",
+  "cancelMatch": "Annuler",
+  "waitingForOpponent": "En attente d'un adversaire...",
+  "matchAccepted": "Match accepté !",
+  "noProposals": "Aucun match disponible",
+  "login": "Se connecter",
+  "signUp": "S'inscrire",
+  "email": "Email",
+  "password": "Mot de passe",
+  "logout": "Se déconnecter",
+  "welcomeTitle": "Bienvenue sur Tic Tac Bet !",
+  "onboardingBoard": "Voici le plateau. Touche une case pour jouer.",
+  "onboardingGame": "Joue à tour de rôle pour aligner 3 symboles !",
+  "onboardingBetting": "Maintenant, pimentons les choses. Tu as 1000 coins !",
+  "onboardingStreaks": "Enchaîne les victoires pour multiplier tes gains !",
+  "skip": "Passer",
+  "next": "Suivant",
+  "getStarted": "C'est parti",
+  "readyToCompete": "Prêt à miser ? Passe en compétition !",
+  "selectMode": "Choisis un mode",
+  "selectDifficulty": "Choisis la difficulté",
+  "startGame": "Lancer la partie",
+  "quit": "Quitter",
+  "restart": "Recommencer",
+  "won": "Gagné",
+  "lost": "Perdu",
+  "versus": "vs",
+  "aiOpponent": "IA ({difficulty})",
+  "@aiOpponent": {
+    "placeholders": {
+      "difficulty": { "type": "String" }
+    }
+  },
+  "localOpponent": "Joueur local",
+  "onlineOpponent": "En ligne",
+  "coinsWon": "+{amount} coins",
+  "@coinsWon": {
+    "placeholders": {
+      "amount": { "type": "int" }
+    }
+  },
+  "coinsLost": "-{amount} coins",
+  "@coinsLost": {
+    "placeholders": {
+      "amount": { "type": "int" }
+    }
+  },
+  "bankrupt": "Plus de coins !",
+  "bailout": "Voici {amount} coins pour revenir dans la partie !",
+  "@bailout": {
+    "placeholders": {
+      "amount": { "type": "int" }
+    }
+  }
+}

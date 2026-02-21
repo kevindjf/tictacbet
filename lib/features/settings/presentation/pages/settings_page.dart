@@ -1,0 +1,31 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
+import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
+import 'package:tic_tac_bet/features/settings/presentation/widgets/difficulty_selector.dart';
+import 'package:tic_tac_bet/features/settings/presentation/widgets/theme_toggle.dart';
+import 'package:tic_tac_bet/features/settings/presentation/widgets/language_selector.dart';
+import 'package:tic_tac_bet/features/settings/presentation/widgets/replay_tutorial_tile.dart';
+
+class SettingsPage extends ConsumerWidget {
+  const SettingsPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      appBar: AppBar(title: Text(context.l10n.settings)),
+      body: ListView(
+        padding: const EdgeInsets.all(AppDimensions.spacingM),
+        children: const [
+          ThemeToggle(),
+          SizedBox(height: AppDimensions.spacingM),
+          DifficultySelector(),
+          SizedBox(height: AppDimensions.spacingM),
+          LanguageSelector(),
+          SizedBox(height: AppDimensions.spacingM),
+          ReplayTutorialTile(),
+        ],
+      ),
+    );
+  }
+}

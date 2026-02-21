@@ -1,0 +1,35 @@
+abstract final class AppDimensions {
+  // Spacing
+  static const double spacingXS = 4;
+  static const double spacingS = 8;
+  static const double spacingM = 16;
+  static const double spacingL = 24;
+  static const double spacingXL = 32;
+  static const double spacingXXL = 48;
+
+  // Border radius
+  static const double radiusS = 8;
+  static const double radiusM = 12;
+  static const double radiusL = 16;
+  static const double radiusXL = 24;
+
+  // Board
+  static const double boardSize = 320;
+  static const double cellSize = 100;
+  static const double cellSpacing = 4;
+  static const double boardBorderWidth = 2;
+
+  // Icons
+  static const double iconS = 16;
+  static const double iconM = 24;
+  static const double iconL = 32;
+  static const double iconXL = 48;
+
+  // Cards
+  static const double cardElevation = 2;
+  static const double cardHeight = 120;
+
+  // Buttons
+  static const double buttonHeight = 48;
+  static const double buttonMinWidth = 120;
+}
