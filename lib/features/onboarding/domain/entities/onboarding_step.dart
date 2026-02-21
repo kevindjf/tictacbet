@@ -2,11 +2,11 @@ enum OnboardingStep {
   welcome,
   board,
   game,
-  betting,
-  streaks;
+  streaks,
+  simulation;
 
   bool get isFirst => this == welcome;
-  bool get isLast => this == streaks;
+  bool get isLast => this == simulation;
 
   OnboardingStep? get next {
     final idx = index + 1;

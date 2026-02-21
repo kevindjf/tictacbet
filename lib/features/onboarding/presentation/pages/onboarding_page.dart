@@ -8,6 +8,7 @@ import 'package:tic_tac_bet/features/onboarding/application/providers/onboarding
 import 'package:tic_tac_bet/features/onboarding/domain/entities/onboarding_step.dart';
 import 'package:tic_tac_bet/features/onboarding/presentation/widgets/onboarding_step_view.dart';
 import 'package:tic_tac_bet/features/onboarding/presentation/widgets/step_indicator.dart';
+import 'package:tic_tac_bet/features/onboarding/presentation/widgets/tutorial_game_simulation.dart';
 
 class OnboardingPage extends ConsumerStatefulWidget {
   const OnboardingPage({super.key});
@@ -37,6 +38,17 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
         }
       });
       return const SizedBox.shrink();
+    }
+
+    // The simulation step takes full control of its own layout.
+    if (currentStep == OnboardingStep.simulation) {
+      return Scaffold(
+        body: TutorialGameSimulation(
+          onComplete: () {
+            ref.read(onboardingNotifierProvider.notifier).complete();
+          },
+        ),
+      );
     }
 
     return Scaffold(
@@ -72,7 +84,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                     ref.read(onboardingNotifierProvider.notifier).next();
                   },
                   child: Text(
-                    currentStep.isLast
+                    currentStep == OnboardingStep.streaks
                         ? context.l10n.getStarted
                         : context.l10n.next,
                   ),
