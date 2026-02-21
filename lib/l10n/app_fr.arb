@@ -126,5 +126,22 @@
     "placeholders": {
       "amount": { "type": "int" }
     }
-  }
+  },
+  "tutorialSimulationTitle": "On joue une partie !",
+  "tutorialSimulationSubtitle": "Suis le guide et touche les cases en surbrillance",
+  "tutorialHint1Title": "Place ton X !",
+  "tutorialHint1Body": "Touche cette case pour commencer ta ligne gagnante sur la ligne du haut.",
+  "tutorialHint2Title": "Prolonge ta ligne !",
+  "tutorialHint2Body": "Encore un X ici — continue sur ta lancée !",
+  "tutorialHint3Title": "Gagne ici !",
+  "tutorialHint3Body": "Complète la ligne du haut pour une victoire parfaite !",
+  "tutorialVictoryTitle": "Tu as gagné ta première partie !",
+  "tutorialRewardCoins": "+{amount} coins",
+  "@tutorialRewardCoins": {
+    "placeholders": {
+      "amount": { "type": "int" }
+    }
+  },
+  "tutorialRewardSubtitle": "Voilà tes 1 000 coins de départ !",
+  "tutorialStartPlaying": "Jouer maintenant !"
 }

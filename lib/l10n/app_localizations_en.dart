@@ -272,4 +272,44 @@ class AppLocalizationsEn extends AppLocalizations {
   String bailout(int amount) {
     return 'Here\'s $amount coins to get back in the game!';
   }
+
+  @override
+  String get tutorialSimulationTitle => 'Let\'s play a game!';
+
+  @override
+  String get tutorialSimulationSubtitle =>
+      'Follow the guide and tap the highlighted cells';
+
+  @override
+  String get tutorialHint1Title => 'Place your X!';
+
+  @override
+  String get tutorialHint1Body =>
+      'Tap this cell to start your winning line along the top row.';
+
+  @override
+  String get tutorialHint2Title => 'Extend your line!';
+
+  @override
+  String get tutorialHint2Body => 'One more X here — keep going!';
+
+  @override
+  String get tutorialHint3Title => 'Win right here!';
+
+  @override
+  String get tutorialHint3Body => 'Complete the top row for a perfect victory!';
+
+  @override
+  String get tutorialVictoryTitle => 'You won your first game!';
+
+  @override
+  String tutorialRewardCoins(int amount) {
+    return '+$amount coins';
+  }
+
+  @override
+  String get tutorialRewardSubtitle => 'Here are your 1,000 starting coins!';
+
+  @override
+  String get tutorialStartPlaying => 'Start playing!';
 }

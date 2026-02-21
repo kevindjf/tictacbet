@@ -589,6 +589,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Here\'s {amount} coins to get back in the game!'**
   String bailout(int amount);
+
+  /// No description provided for @tutorialSimulationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s play a game!'**
+  String get tutorialSimulationTitle;
+
+  /// No description provided for @tutorialSimulationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow the guide and tap the highlighted cells'**
+  String get tutorialSimulationSubtitle;
+
+  /// No description provided for @tutorialHint1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Place your X!'**
+  String get tutorialHint1Title;
+
+  /// No description provided for @tutorialHint1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap this cell to start your winning line along the top row.'**
+  String get tutorialHint1Body;
+
+  /// No description provided for @tutorialHint2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Extend your line!'**
+  String get tutorialHint2Title;
+
+  /// No description provided for @tutorialHint2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'One more X here — keep going!'**
+  String get tutorialHint2Body;
+
+  /// No description provided for @tutorialHint3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Win right here!'**
+  String get tutorialHint3Title;
+
+  /// No description provided for @tutorialHint3Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete the top row for a perfect victory!'**
+  String get tutorialHint3Body;
+
+  /// No description provided for @tutorialVictoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You won your first game!'**
+  String get tutorialVictoryTitle;
+
+  /// No description provided for @tutorialRewardCoins.
+  ///
+  /// In en, this message translates to:
+  /// **'+{amount} coins'**
+  String tutorialRewardCoins(int amount);
+
+  /// No description provided for @tutorialRewardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Here are your 1,000 starting coins!'**
+  String get tutorialRewardSubtitle;
+
+  /// No description provided for @tutorialStartPlaying.
+  ///
+  /// In en, this message translates to:
+  /// **'Start playing!'**
+  String get tutorialStartPlaying;
 }
 
 class _AppLocalizationsDelegate

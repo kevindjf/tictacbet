@@ -273,4 +273,45 @@ class AppLocalizationsFr extends AppLocalizations {
   String bailout(int amount) {
     return 'Voici $amount coins pour revenir dans la partie !';
   }
+
+  @override
+  String get tutorialSimulationTitle => 'On joue une partie !';
+
+  @override
+  String get tutorialSimulationSubtitle =>
+      'Suis le guide et touche les cases en surbrillance';
+
+  @override
+  String get tutorialHint1Title => 'Place ton X !';
+
+  @override
+  String get tutorialHint1Body =>
+      'Touche cette case pour commencer ta ligne gagnante sur la ligne du haut.';
+
+  @override
+  String get tutorialHint2Title => 'Prolonge ta ligne !';
+
+  @override
+  String get tutorialHint2Body => 'Encore un X ici — continue sur ta lancée !';
+
+  @override
+  String get tutorialHint3Title => 'Gagne ici !';
+
+  @override
+  String get tutorialHint3Body =>
+      'Complète la ligne du haut pour une victoire parfaite !';
+
+  @override
+  String get tutorialVictoryTitle => 'Tu as gagné ta première partie !';
+
+  @override
+  String tutorialRewardCoins(int amount) {
+    return '+$amount coins';
+  }
+
+  @override
+  String get tutorialRewardSubtitle => 'Voilà tes 1 000 coins de départ !';
+
+  @override
+  String get tutorialStartPlaying => 'Jouer maintenant !';
 }

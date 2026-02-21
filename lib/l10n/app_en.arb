@@ -126,5 +126,22 @@
     "placeholders": {
       "amount": { "type": "int" }
     }
-  }
+  },
+  "tutorialSimulationTitle": "Let's play a game!",
+  "tutorialSimulationSubtitle": "Follow the guide and tap the highlighted cells",
+  "tutorialHint1Title": "Place your X!",
+  "tutorialHint1Body": "Tap this cell to start your winning line along the top row.",
+  "tutorialHint2Title": "Extend your line!",
+  "tutorialHint2Body": "One more X here — keep going!",
+  "tutorialHint3Title": "Win right here!",
+  "tutorialHint3Body": "Complete the top row for a perfect victory!",
+  "tutorialVictoryTitle": "You won your first game!",
+  "tutorialRewardCoins": "+{amount} coins",
+  "@tutorialRewardCoins": {
+    "placeholders": {
+      "amount": { "type": "int" }
+    }
+  },
+  "tutorialRewardSubtitle": "Here are your 1,000 starting coins!",
+  "tutorialStartPlaying": "Start playing!"
 }

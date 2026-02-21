@@ -31,6 +31,9 @@ dependencies:
   # Animations
   flutter_animate: ^4.5.2
 
+  # Tutorial
+  tutorial_coach_mark: ^1.2.11
+
   # Typography
   google_fonts: ^6.2.1
 
