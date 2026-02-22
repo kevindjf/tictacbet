@@ -84,7 +84,7 @@ abstract final class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.betclicRed,
+          backgroundColor: AppColors.betclicRedButton,
           foregroundColor: Colors.white,
           minimumSize: const Size(120, 48),
           shape: RoundedRectangleBorder(

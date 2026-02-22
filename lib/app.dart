@@ -10,8 +10,8 @@ class TicTacBetApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeModeProvider);
-    final locale = ref.watch(localeProvider);
+    final themeMode = ref.watch(themeModeSettingProvider);
+    final locale = ref.watch(localeSettingProvider);
 
     return MaterialApp.router(
       title: 'Tic Tac Bet',

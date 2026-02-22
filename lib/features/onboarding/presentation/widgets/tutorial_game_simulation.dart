@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
 import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
+import 'package:tic_tac_bet/core/widgets/app_pattern_background.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/board.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/game_result.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/move.dart';
@@ -68,9 +69,9 @@ class _TutorialGameSimulationState extends State<TutorialGameSimulation> {
     final theme = Theme.of(context);
 
     TutorialCoachMark(
-      targets: _buildTargets(theme),
+      targets: _coachTargets(theme),
       colorShadow: theme.colorScheme.scrim,
-      opacityShadow: 0.88,
+      opacityShadow: 0.72,
       paddingFocus: AppDimensions.spacingS,
       textSkip: context.l10n.skip,
       onClickTarget: (target) {
@@ -113,14 +114,21 @@ class _TutorialGameSimulationState extends State<TutorialGameSimulation> {
     ).show(context: context);
   }
 
-  List<TargetFocus> _buildTargets(ThemeData theme) {
-    final overlayTextColor = theme.colorScheme.onInverseSurface;
+  List<TargetFocus> _coachTargets(ThemeData theme) {
+    final overlayTextColor = Colors.white;
     final textStyle = theme.textTheme.bodyMedium!.copyWith(
       color: overlayTextColor,
+      height: 1.25,
+      shadows: const [
+        Shadow(color: Color(0xCC000000), blurRadius: 8),
+      ],
     );
     final titleStyle = theme.textTheme.titleMedium!.copyWith(
       color: overlayTextColor,
       fontWeight: FontWeight.bold,
+      shadows: const [
+        Shadow(color: Color(0xCC000000), blurRadius: 10),
+      ],
     );
 
     return [
@@ -134,13 +142,15 @@ class _TutorialGameSimulationState extends State<TutorialGameSimulation> {
             align: ContentAlign.bottom,
             child: Padding(
               padding: const EdgeInsets.only(top: AppDimensions.spacingL),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(context.l10n.tutorialHint1Title, style: titleStyle),
-                  const SizedBox(height: AppDimensions.spacingS),
-                  Text(context.l10n.tutorialHint1Body, style: textStyle),
-                ],
+              child: _CoachTextCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(context.l10n.tutorialHint1Title, style: titleStyle),
+                    const SizedBox(height: AppDimensions.spacingS),
+                    Text(context.l10n.tutorialHint1Body, style: textStyle),
+                  ],
+                ),
               ),
             ),
           ),
@@ -156,13 +166,15 @@ class _TutorialGameSimulationState extends State<TutorialGameSimulation> {
             align: ContentAlign.bottom,
             child: Padding(
               padding: const EdgeInsets.only(top: AppDimensions.spacingL),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(context.l10n.tutorialHint2Title, style: titleStyle),
-                  const SizedBox(height: AppDimensions.spacingS),
-                  Text(context.l10n.tutorialHint2Body, style: textStyle),
-                ],
+              child: _CoachTextCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(context.l10n.tutorialHint2Title, style: titleStyle),
+                    const SizedBox(height: AppDimensions.spacingS),
+                    Text(context.l10n.tutorialHint2Body, style: textStyle),
+                  ],
+                ),
               ),
             ),
           ),
@@ -178,13 +190,15 @@ class _TutorialGameSimulationState extends State<TutorialGameSimulation> {
             align: ContentAlign.bottom,
             child: Padding(
               padding: const EdgeInsets.only(top: AppDimensions.spacingL),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(context.l10n.tutorialHint3Title, style: titleStyle),
-                  const SizedBox(height: AppDimensions.spacingS),
-                  Text(context.l10n.tutorialHint3Body, style: textStyle),
-                ],
+              child: _CoachTextCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(context.l10n.tutorialHint3Title, style: titleStyle),
+                    const SizedBox(height: AppDimensions.spacingS),
+                    Text(context.l10n.tutorialHint3Body, style: textStyle),
+                  ],
+                ),
               ),
             ),
           ),
@@ -197,56 +211,85 @@ class _TutorialGameSimulationState extends State<TutorialGameSimulation> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: AppDimensions.spacingXL),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppDimensions.spacingM,
-                ),
-                child: Text(
-                  context.l10n.tutorialSimulationTitle,
-                  style: Theme.of(context).textTheme.headlineSmall,
-                  textAlign: TextAlign.center,
-                ).animate().fadeIn(
-                  duration: const Duration(milliseconds: 400),
-                ),
-              ),
-              const SizedBox(height: AppDimensions.spacingS),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppDimensions.spacingM,
-                ),
-                child: Text(
-                  context.l10n.tutorialSimulationSubtitle,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+    return AppPatternBackground(
+      child: Stack(
+        children: [
+          SafeArea(
+            child: Column(
+              children: [
+                const SizedBox(height: AppDimensions.spacingXL),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.spacingM,
                   ),
-                  textAlign: TextAlign.center,
-                ).animate().fadeIn(
-                  duration: const Duration(milliseconds: 500),
+                  child: Text(
+                    context.l10n.tutorialSimulationTitle,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                    textAlign: TextAlign.center,
+                  ).animate().fadeIn(
+                    duration: const Duration(milliseconds: 400),
+                  ),
                 ),
-              ),
-              const Spacer(),
-              Center(
-                child: TutorialBoardGrid(
-                  board: _board,
-                  result: _result,
-                  cellKeys: _cellKeys,
+                const SizedBox(height: AppDimensions.spacingS),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.spacingM,
+                  ),
+                  child: Text(
+                    context.l10n.tutorialSimulationSubtitle,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
+                  ).animate().fadeIn(
+                    duration: const Duration(milliseconds: 500),
+                  ),
                 ),
-              ),
-              const Spacer(),
-            ],
+                const Spacer(),
+                Center(
+                  child: TutorialBoardGrid(
+                    board: _board,
+                    result: _result,
+                    cellKeys: _cellKeys,
+                  ),
+                ),
+                const Spacer(),
+              ],
+            ),
           ),
-        ),
-        if (_showVictory)
-          TutorialVictoryReward(onComplete: widget.onComplete)
-              .animate()
-              .fadeIn(duration: const Duration(milliseconds: 300)),
-      ],
+          if (_showVictory)
+            TutorialVictoryReward(onComplete: widget.onComplete)
+                .animate()
+                .fadeIn(duration: const Duration(milliseconds: 300)),
+        ],
+      ),
+    );
+  }
+}
+
+class _CoachTextCard extends StatelessWidget {
+  const _CoachTextCard({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(maxWidth: 320),
+      padding: const EdgeInsets.all(AppDimensions.spacingM),
+      decoration: BoxDecoration(
+        color: const Color(0xCC111827),
+        borderRadius: BorderRadius.circular(AppDimensions.radiusM),
+        border: Border.all(color: Colors.white.withAlpha(28)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0xAA000000),
+            blurRadius: 16,
+            offset: Offset(0, 8),
+          ),
+        ],
+      ),
+      child: child,
     );
   }
 }

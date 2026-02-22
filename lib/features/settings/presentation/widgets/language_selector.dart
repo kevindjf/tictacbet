@@ -9,7 +9,12 @@ class LanguageSelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final current = ref.watch(localeProvider);
+    final savedLocale = ref.watch(localeSettingProvider);
+    final systemLocale = Localizations.localeOf(context);
+    final current = switch ((savedLocale ?? systemLocale).languageCode) {
+      'fr' => const Locale('fr'),
+      _ => const Locale('en'),
+    };
 
     return Card(
       child: Padding(
@@ -23,13 +28,21 @@ class LanguageSelector extends ConsumerWidget {
             ),
             const SizedBox(height: AppDimensions.spacingS),
             SegmentedButton<Locale>(
-              segments: const [
-                ButtonSegment(value: Locale('en'), label: Text('English')),
-                ButtonSegment(value: Locale('fr'), label: Text('Français')),
+              segments: [
+                ButtonSegment(
+                  value: const Locale('en'),
+                  label: Text(context.l10n.languageEnglish),
+                ),
+                ButtonSegment(
+                  value: const Locale('fr'),
+                  label: Text(context.l10n.languageFrench),
+                ),
               ],
               selected: {current},
-              onSelectionChanged: (selected) {
-                ref.read(localeProvider.notifier).state = selected.first;
+              onSelectionChanged: (selected) async {
+                final locale = selected.first;
+                ref.read(localeSettingProvider.notifier).setValue(locale);
+                await SettingsStorage.writeLocale(locale);
               },
             ),
           ],

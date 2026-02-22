@@ -29,6 +29,10 @@ abstract final class AppDimensions {
   static const double cardElevation = 2;
   static const double cardHeight = 120;
 
+  // Game mode carousel
+  static const double gameCardBorderRadius = 30;
+  static const double gameCardHeightFraction = 0.58;
+
   // Buttons
   static const double buttonHeight = 48;
   static const double buttonMinWidth = 120;

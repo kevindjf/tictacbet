@@ -14,6 +14,7 @@ Future<void> main() async {
     Hive.openBox<GameHistoryEntryModel>('game_history'),
     Hive.openBox('wallet'),
     Hive.openBox('onboarding'),
+    Hive.openBox('settings'),
   ]);
 
   runApp(const ProviderScope(child: TicTacBetApp()));

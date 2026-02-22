@@ -21,8 +21,10 @@ class BetSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final betclic = Theme.of(context).extension<BetclicTheme>()!;
-    final potentialWin = (currentBet * 2 * multiplier).round();
-
+    final canBet = maxBet >= Wallet.minimumBet;
+    final effectiveBet = canBet
+        ? currentBet.clamp(Wallet.minimumBet, maxBet)
+        : Wallet.minimumBet;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(AppDimensions.spacingM),
@@ -32,7 +34,7 @@ class BetSlider extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  context.l10n.betAmount(currentBet),
+                  context.l10n.betAmount(effectiveBet),
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 Text(
@@ -45,19 +47,19 @@ class BetSlider extends StatelessWidget {
             ),
             const SizedBox(height: AppDimensions.spacingS),
             Slider(
-              value: currentBet.toDouble(),
+              value: effectiveBet.toDouble(),
               min: Wallet.minimumBet.toDouble(),
-              max: maxBet > Wallet.minimumBet
+              max: canBet
                   ? maxBet.toDouble()
                   : Wallet.minimumBet.toDouble() + 1,
-              divisions: maxBet > Wallet.minimumBet
+              divisions: canBet
                   ? ((maxBet - Wallet.minimumBet) ~/ 10).clamp(1, 100)
                   : 1,
-              onChanged: (value) => onChanged(value.round()),
+              onChanged: canBet ? (value) => onChanged(value.round()) : null,
             ),
             const SizedBox(height: AppDimensions.spacingS),
             Text(
-              context.l10n.coinsWon(potentialWin),
+              context.l10n.coinsWon((effectiveBet * 2 * multiplier).round()),
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: betclic.coinColor,
                 fontWeight: FontWeight.w600,
