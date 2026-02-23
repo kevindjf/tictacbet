@@ -201,9 +201,9 @@ lib/
 │   │   ├── application/    # AuthProviders
 │   │   └── presentation/   # LoginPage, SignUpPage (simple)
 │   ├── onboarding/
-│   │   ├── domain/         # OnboardingStep, ShouldShowOnboarding
-│   │   ├── data/           # OnboardingLocalDatasource (flag Hive)
-│   │   ├── application/    # OnboardingNotifier
+│   │   ├── domain/         # OnboardingStep, OnboardingRepository, use cases
+│   │   ├── data/           # OnboardingRepositoryImpl (flag Hive)
+│   │   ├── application/    # OnboardingController + providers
 │   │   └── presentation/   # OnboardingPage, CoachOverlay, CoachTooltip, HighlightHole
 │   ├── home/
 │   │   └── presentation/   # HomePage, ModeCard, AppLogo
@@ -221,59 +221,17 @@ test/
 
 ### Principes architecturaux clés
 
-1. **Pureté du domaine** : zéro `import 'package:flutter'` dans `domain/`
-2. **Inversion de dépendance** : repos abstraits dans domain, implémentés dans data
-3. **Immutabilité** : toutes les entités freezed
-4. **Sealed states** : `GameResult`, `GameState` avec pattern matching exhaustif
-5. **Pas de logique métier dans les widgets** : widgets lisent les providers, c'est tout
+Les principes, conventions de code/UI et règles strictes ont été extraits pour alléger ce document :
 
-### Règles de composition UI — Maximum de sous-widgets, minimum de fonctions
+- `doc/CONVENTIONS.md` : conventions Riverpod Generator, nommage, UI composition, theming, i18n, commandes utiles
+- `doc/RULES.md` : règles non négociables + checklist de conformité
 
-**Principe : chaque widget fait UNE chose.** Pas de `build()` de 200 lignes.
+Résumé des invariants d'architecture :
 
-Exemple de découpage pour `GamePage` :
-```
-game_page.dart              -> scaffold + layout orchestration only
-├── game_app_bar.dart       -> AppBar custom avec score et mode
-├── game_board.dart         -> la grille 3x3
-│   └── game_cell.dart      -> une cellule individuelle (X/O/vide)
-├── game_status_bar.dart    -> indicateur tour + timer
-├── game_player_indicator.dart -> avatar/nom du joueur actif
-├── game_action_bar.dart    -> boutons (restart, quit)
-└── game_result_overlay.dart -> overlay victoire/défaite/égalité
-```
-
-**Règles strictes :**
-- Un widget = un fichier. Pas de widgets privés `_MyWidget` cachés en bas de fichier.
-- Si un `build()` dépasse ~50 lignes -> découper en sous-widgets
-- **Pas de méthodes `Widget _buildXxx()`** dans les widgets. Chaque morceau d'UI est un widget séparé avec son propre fichier.
-- Les widgets sont des `StatelessWidget` ou `ConsumerWidget` (Riverpod). Pas de `StatefulWidget` sauf pour les AnimationController.
-- Les callbacks complexes sont dans les providers, pas dans les widgets.
-
-### Theming — Zéro couleur/style hardcodé
-
-**Règles strictes :**
-- **AUCUNE couleur en dur** dans les widgets. Tout passe par le theme :
-  ```dart
-  // INTERDIT
-  color: Color(0xFFE63946)
-
-  // OBLIGATOIRE
-  color: Theme.of(context).colorScheme.primary
-  color: Theme.of(context).extension<BetclicTheme>()!.coinColor
-  ```
-- **AUCUN TextStyle en dur**. Utiliser `Theme.of(context).textTheme.bodyLarge` etc.
-- **AUCUN padding/margin magique**. Utiliser `AppDimensions.spacingM`, `AppDimensions.radiusL`, etc.
-- Les tokens custom passent par `BetclicThemeExtension`
-
-### Internationalisation — flutter_localizations + ARB
-
-- `flutter_localizations` (SDK) + `intl` package
-- Fichiers `.arb` dans `lib/l10n/`
-- Génération automatique via `flutter gen-l10n`
-- **AUCUN string en dur** dans les widgets
-- Extension helper : `context.l10n.yourTurn`
-- Langues initiales : **FR + EN**
+1. Domaine pur Dart
+2. Clean Architecture + feature-first
+3. Logique métier hors widgets
+4. Providers via Riverpod Generator
 
 ---
 
@@ -448,48 +406,23 @@ Branche unique `main`, commits conventionnels, chaque commit compile + tests pas
 
 ## 12. Vérification finale
 
-- [ ] `flutter analyze` -> 0 issues
-- [ ] `flutter test` -> all pass
-- [ ] `flutter test --coverage` -> >90% domaine
-- [ ] App tourne sur iOS simulator et/ou Android emulator
-- [ ] Dark + light theme fonctionnels
-- [ ] Partie complète : home -> bet -> play -> result -> history
-- [ ] IA fonctionne en easy/medium/hard
-- [ ] Matchmaking online fonctionnel
-- [ ] Onboarding interactif complet
-- [ ] Zéro string hardcodé (tout en ARB)
-- [ ] Zéro couleur hardcodée (tout dans le theme)
-- [ ] Note explicative incluse
+La checklist de validation a été déplacée dans `doc/RULES.md` (section "Checklist de vérification finale").
 
 ---
 
 ## 13. Note pour Codex / IA suivante
 
-Ce document est le **plan d'implémentation complet**. Si tu es une IA qui reprend ce projet :
+Ce document est le **plan d'implémentation / vision globale**. Si tu es une IA qui reprend ce projet :
 
-1. **Lis ce fichier en entier** avant de coder quoi que ce soit
-2. **Suis l'ordre jour par jour** (section 10) — chaque jour dépend du précédent
-3. **Respecte les règles strictes** (section 4) : widgets découpés, theming, i18n
-4. **Le domaine est pur Dart** — aucun import Flutter dans `lib/features/*/domain/`
-5. **Chaque commit doit compiler et les tests doivent passer**
-6. En cas de doute, réfère-toi à la section correspondante de ce document
-7. Le fichier `CLAUDE.md` à la racine du projet contient les mêmes règles en format condensé
+1. **Lis ce fichier en entier** (vision + plan)
+2. **Lis `doc/CONVENTIONS.md`** (style de code, Riverpod, UI, theming, i18n)
+3. **Lis `doc/RULES.md`** (garde-fous et checklist)
+4. **Suis l'ordre jour par jour** (section 10) — chaque jour dépend du précédent
+5. **Le domaine est pur Dart** — aucun import Flutter dans `lib/features/*/domain/`
+6. **Chaque commit doit compiler et les tests doivent passer**
+7. En cas de doute, réfère-toi au document le plus spécifique (`ARCHITECTURE` -> `CONVENTIONS` -> `RULES`)
+8. Le fichier `CLAUDE.md` à la racine du projet contient les mêmes règles en format condensé
 
 ### Commandes utiles
-```bash
-# Générer le code (freezed, riverpod, json_serializable, l10n)
-dart run build_runner build --delete-conflicting-outputs
-flutter gen-l10n
 
-# Lancer les tests
-flutter test
-
-# Analyser le code
-flutter analyze
-
-# Formater
-dart format .
-
-# Lancer l'app
-flutter run
-```
+Voir `doc/CONVENTIONS.md` (section "Commandes utiles").

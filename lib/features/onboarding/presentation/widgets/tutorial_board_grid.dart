@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
-import 'package:tic_tac_bet/core/theme/betclic_theme_extension.dart';
+import 'package:tic_tac_bet/core/extensions/betclic_theme_context_extension.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/board.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/game_result.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/player.dart';
@@ -26,10 +26,10 @@ class TutorialBoardGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final betclic = Theme.of(context).extension<BetclicTheme>()!;
+    final betclic = context.betclic;
 
     final winResult = switch (result) {
-      GameResultWin() => result as GameResultWin,
+      final GameResultWin win => win,
       _ => null,
     };
     final winningLine = winResult?.winningLine;
@@ -57,9 +57,7 @@ class TutorialBoardGrid extends StatelessWidget {
               final col = index % 3;
               final player = board.cellAt(row, col);
               final isWinningCell =
-                  winningLine?.any(
-                    (pos) => pos.$1 == row && pos.$2 == col,
-                  ) ??
+                  winningLine?.any((pos) => pos.$1 == row && pos.$2 == col) ??
                   false;
 
               return Container(

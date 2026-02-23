@@ -69,6 +69,8 @@
   "darkMode": "Dark mode",
   "lightMode": "Light mode",
   "language": "Language",
+  "languageEnglish": "English",
+  "languageFrench": "French",
   "replayTutorial": "Replay tutorial",
   "lobby": "Lobby",
   "createMatch": "Create Match",
@@ -77,6 +79,7 @@
   "cancelMatch": "Cancel",
   "waitingForOpponent": "Waiting for opponent...",
   "matchAccepted": "Match accepted!",
+  "simulateOpponent": "Simulate opponent",
   "noProposals": "No matches available",
   "login": "Log in",
   "signUp": "Sign up",
@@ -142,5 +145,15 @@
     }
   },
   "tutorialRewardSubtitle": "Here are your 1,000 starting coins!",
-  "tutorialStartPlaying": "Start playing!"
+  "tutorialStartPlaying": "Start playing!",
+  "cashBattle": "CASH\nBATTLE",
+  "cashBattleDesc": "Challenge real players and bet your tokens.",
+  "cashBattlePlay": "Play (1.00€)",
+  "liveJackpot": "Live Jackpot",
+  "cyberBot": "CYBER\nBOT",
+  "cyberBotDesc": "Train against the most powerful AI.",
+  "cyberBotPlay": "Challenge the Bot",
+  "duel1v1": "DUEL\n1 VS 1",
+  "duel1v1Desc": "The classic. Two players, one screen.",
+  "duel1v1Play": "Start the duel"
 }

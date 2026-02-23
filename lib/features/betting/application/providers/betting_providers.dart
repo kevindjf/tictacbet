@@ -1,4 +1,5 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' show Ref;
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tic_tac_bet/features/betting/data/datasources/wallet_local_datasource.dart';
 import 'package:tic_tac_bet/features/betting/data/repositories/wallet_repository_impl.dart';
 import 'package:tic_tac_bet/features/betting/domain/entities/bet.dart';
@@ -9,27 +10,37 @@ import 'package:tic_tac_bet/features/betting/domain/use_cases/place_bet.dart';
 import 'package:tic_tac_bet/features/betting/domain/use_cases/resolve_bet.dart';
 import 'package:tic_tac_bet/features/history/domain/entities/game_history_entry.dart';
 
-final walletDatasourceProvider = Provider<WalletLocalDatasource>((ref) {
+part 'betting_providers.g.dart';
+
+@Riverpod(keepAlive: true)
+WalletLocalDatasource walletDatasource(Ref ref) {
   return WalletLocalDatasource();
-});
+}
 
-final walletRepositoryProvider = Provider<WalletRepository>((ref) {
+@Riverpod(keepAlive: true)
+WalletRepository walletRepository(Ref ref) {
   return WalletRepositoryImpl(ref.read(walletDatasourceProvider));
-});
+}
 
-final placeBetUseCaseProvider = Provider<PlaceBetUseCase>((ref) {
+@Riverpod(keepAlive: true)
+PlaceBetUseCase placeBetUseCase(Ref ref) {
   return PlaceBetUseCase();
-});
+}
 
-final resolveBetUseCaseProvider = Provider<ResolveBetUseCase>((ref) {
+@Riverpod(keepAlive: true)
+ResolveBetUseCase resolveBetUseCase(Ref ref) {
   return ResolveBetUseCase();
-});
+}
 
-class WalletNotifier extends StateNotifier<Wallet> {
-  WalletNotifier(this._repository)
-    : super(const Wallet(balance: Wallet.initialBalance));
+@Riverpod(keepAlive: true)
+class WalletController extends _$WalletController {
+  WalletRepository get _repository => ref.read(walletRepositoryProvider);
 
-  final WalletRepository _repository;
+  @override
+  Wallet build() {
+    Future.microtask(load);
+    return const Wallet(balance: Wallet.initialBalance);
+  }
 
   Future<void> load() async {
     state = await _repository.getWallet();
@@ -59,16 +70,15 @@ class WalletNotifier extends StateNotifier<Wallet> {
   }
 }
 
-final walletNotifierProvider = StateNotifierProvider<WalletNotifier, Wallet>((
-  ref,
-) {
-  return WalletNotifier(ref.read(walletRepositoryProvider));
-});
+@Riverpod(keepAlive: true)
+class StreakController extends _$StreakController {
+  WalletRepository get _repository => ref.read(walletRepositoryProvider);
 
-class StreakNotifier extends StateNotifier<Streak> {
-  StreakNotifier(this._repository) : super(const Streak());
-
-  final WalletRepository _repository;
+  @override
+  Streak build() {
+    Future.microtask(load);
+    return const Streak();
+  }
 
   Future<void> load() async {
     state = await _repository.getStreak();
@@ -80,13 +90,14 @@ class StreakNotifier extends StateNotifier<Streak> {
   }
 }
 
-final streakNotifierProvider = StateNotifierProvider<StreakNotifier, Streak>((
-  ref,
-) {
-  return StreakNotifier(ref.read(walletRepositoryProvider));
-});
+@Riverpod(keepAlive: true)
+class CurrentBet extends _$CurrentBet {
+  @override
+  Bet? build() => null;
 
-final currentBetProvider = StateProvider<Bet?>((ref) => null);
+  void setBet(Bet? bet) => state = bet;
+  void clear() => state = null;
+}
 
 class BettingService {
   BettingService(this._ref);
@@ -97,12 +108,12 @@ class BettingService {
   ResolveBetUseCase get _resolveBet => _ref.read(resolveBetUseCaseProvider);
 
   Future<Bet?> place(int amount) async {
-    final wallet = _ref.read(walletNotifierProvider);
-    final streak = _ref.read(streakNotifierProvider);
+    final wallet = _ref.read(walletControllerProvider);
+    final streak = _ref.read(streakControllerProvider);
     final result = _placeBet(wallet, amount, streak);
     return result.when(
       success: (bet) async {
-        await _ref.read(walletNotifierProvider.notifier).deductBet(amount);
+        await _ref.read(walletControllerProvider.notifier).deductBet(amount);
         return bet;
       },
       failure: (_) => null,
@@ -110,27 +121,28 @@ class BettingService {
   }
 
   Future<BetResolution?> resolve(Bet bet, GameOutcome outcome) async {
-    final streak = _ref.read(streakNotifierProvider);
+    final streak = _ref.read(streakControllerProvider);
     final resolution = _resolveBet(bet, outcome, streak.count);
 
     if (resolution.balanceChange > 0) {
       await _ref
-          .read(walletNotifierProvider.notifier)
+          .read(walletControllerProvider.notifier)
           .addWinnings(resolution.balanceChange);
     }
 
     await _ref
-        .read(streakNotifierProvider.notifier)
+        .read(streakControllerProvider.notifier)
         .update(Streak(count: resolution.newStreakCount));
 
-    if (_ref.read(walletNotifierProvider).isBankrupt) {
-      await _ref.read(walletNotifierProvider.notifier).bailout();
+    if (_ref.read(walletControllerProvider).isBankrupt) {
+      await _ref.read(walletControllerProvider.notifier).bailout();
     }
 
     return resolution;
   }
 }
 
-final bettingServiceProvider = Provider<BettingService>((ref) {
+@Riverpod(keepAlive: true)
+BettingService bettingService(Ref ref) {
   return BettingService(ref);
-});
+}

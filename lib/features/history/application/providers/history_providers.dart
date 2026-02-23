@@ -1,35 +1,37 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' show Ref;
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tic_tac_bet/features/history/data/datasources/history_local_datasource.dart';
 import 'package:tic_tac_bet/features/history/data/repositories/history_repository_impl.dart';
 import 'package:tic_tac_bet/features/history/domain/entities/game_history_entry.dart';
 import 'package:tic_tac_bet/features/history/domain/entities/game_statistics.dart';
 import 'package:tic_tac_bet/features/history/domain/repositories/history_repository.dart';
 
-final historyDatasourceProvider = Provider<HistoryLocalDatasource>((ref) {
+part 'history_providers.g.dart';
+
+@Riverpod(keepAlive: true)
+HistoryLocalDatasource historyDatasource(Ref ref) {
   return HistoryLocalDatasource();
-});
+}
 
-final historyRepositoryProvider = Provider<HistoryRepository>((ref) {
+@Riverpod(keepAlive: true)
+HistoryRepository historyRepository(Ref ref) {
   return HistoryRepositoryImpl(ref.read(historyDatasourceProvider));
-});
+}
 
-final historyProvider = FutureProvider.autoDispose<List<GameHistoryEntry>>((
-  ref,
-) async {
+@riverpod
+Future<List<GameHistoryEntry>> history(Ref ref) async {
   final repository = ref.read(historyRepositoryProvider);
   return repository.getHistory();
-});
+}
 
-final statisticsProvider = FutureProvider.autoDispose<GameStatistics>((
-  ref,
-) async {
+@riverpod
+Future<GameStatistics> statistics(Ref ref) async {
   final repository = ref.read(historyRepositoryProvider);
   return repository.getStatistics();
-});
+}
 
-final onlineStatisticsProvider = FutureProvider.autoDispose<GameStatistics>((
-  ref,
-) async {
+@riverpod
+Future<GameStatistics> onlineStatistics(Ref ref) async {
   final repository = ref.read(historyRepositoryProvider);
   return repository.getStatistics(onlineOnly: true);
-});
+}

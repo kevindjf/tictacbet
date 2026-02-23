@@ -24,10 +24,16 @@ abstract final class AppDimensions {
   static const double iconM = 24;
   static const double iconL = 32;
   static const double iconXL = 48;
+  static const double onboardingIconSize = 80;
 
   // Cards
   static const double cardElevation = 2;
   static const double cardHeight = 120;
+  static const double coachCardMaxWidth = 320;
+
+  // Game mode carousel
+  static const double gameCardBorderRadius = 30;
+  static const double gameCardHeightFraction = 0.58;
 
   // Buttons
   static const double buttonHeight = 48;

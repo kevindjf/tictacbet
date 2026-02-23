@@ -10,7 +10,7 @@ class DifficultySelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final current = ref.watch(difficultyProvider);
+    final current = ref.watch(difficultySettingProvider);
 
     return Card(
       child: Padding(
@@ -39,8 +39,10 @@ class DifficultySelector extends ConsumerWidget {
                 ),
               ],
               selected: {current},
-              onSelectionChanged: (selected) {
-                ref.read(difficultyProvider.notifier).state = selected.first;
+              onSelectionChanged: (selected) async {
+                final difficulty = selected.first;
+                ref.read(difficultySettingProvider.notifier).setValue(difficulty);
+                await SettingsStorage.writeDifficulty(difficulty);
               },
             ),
           ],

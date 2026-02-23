@@ -151,6 +151,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get language => 'Langue';
 
   @override
+  String get languageEnglish => 'Anglais';
+
+  @override
+  String get languageFrench => 'Français';
+
+  @override
   String get replayTutorial => 'Rejouer le tutoriel';
 
   @override
@@ -173,6 +179,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get matchAccepted => 'Match accepté !';
+
+  @override
+  String get simulateOpponent => 'Simuler un adversaire';
 
   @override
   String get noProposals => 'Aucun match disponible';
@@ -310,4 +319,34 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get tutorialStartPlaying => 'Jouer maintenant !';
+
+  @override
+  String get cashBattle => 'CASH\nBATTLE';
+
+  @override
+  String get cashBattleDesc => 'Affronte des joueurs réels et mise tes tokens.';
+
+  @override
+  String get cashBattlePlay => 'Jouer (1.00€)';
+
+  @override
+  String get liveJackpot => 'Live Jackpot';
+
+  @override
+  String get cyberBot => 'CYBER\nBOT';
+
+  @override
+  String get cyberBotDesc => 'Entraîne-toi contre l\'IA la plus puissante.';
+
+  @override
+  String get cyberBotPlay => 'Défier le Bot';
+
+  @override
+  String get duel1v1 => 'DUEL\n1 VS 1';
+
+  @override
+  String get duel1v1Desc => 'Le classique. À deux sur le même écran.';
+
+  @override
+  String get duel1v1Play => 'Lancer le duel';
 }

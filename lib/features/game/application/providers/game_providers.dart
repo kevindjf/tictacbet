@@ -1,6 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' show Ref;
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tic_tac_bet/core/constants/app_durations.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/game_mode.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/game_state.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/move.dart';
@@ -8,34 +10,42 @@ import 'package:tic_tac_bet/features/game/domain/entities/player.dart';
 import 'package:tic_tac_bet/features/game/domain/use_cases/ai_move.dart';
 import 'package:tic_tac_bet/features/game/domain/use_cases/check_winner.dart';
 import 'package:tic_tac_bet/features/game/domain/use_cases/make_move.dart';
-import 'package:tic_tac_bet/core/constants/app_durations.dart';
 
-final checkWinnerUseCaseProvider = Provider<CheckWinnerUseCase>((ref) {
+part 'game_providers.g.dart';
+
+@riverpod
+CheckWinnerUseCase checkWinnerUseCase(Ref ref) {
   return CheckWinnerUseCase();
-});
+}
 
-final makeMoveUseCaseProvider = Provider<MakeMoveUseCase>((ref) {
+@riverpod
+MakeMoveUseCase makeMoveUseCase(Ref ref) {
   return MakeMoveUseCase();
-});
+}
 
-final aiMoveUseCaseProvider = Provider<AiMoveUseCase>((ref) {
+@riverpod
+AiMoveUseCase aiMoveUseCase(Ref ref) {
   return AiMoveUseCase(checkWinner: ref.read(checkWinnerUseCaseProvider));
-});
+}
 
-class GameNotifier extends StateNotifier<GameState> {
-  GameNotifier({
-    required this.checkWinner,
-    required this.makeMove,
-    required this.aiMove,
-  }) : super(GameState.initial(const GameMode.vsLocal()));
-
-  final CheckWinnerUseCase checkWinner;
-  final MakeMoveUseCase makeMove;
-  final AiMoveUseCase aiMove;
-
+@riverpod
+class GameController extends _$GameController {
   Timer? _aiTimer;
 
+  CheckWinnerUseCase get _checkWinner => ref.read(checkWinnerUseCaseProvider);
+  MakeMoveUseCase get _makeMove => ref.read(makeMoveUseCaseProvider);
+  AiMoveUseCase get _aiMove => ref.read(aiMoveUseCaseProvider);
+
+  @override
+  GameState build() {
+    ref.onDispose(() {
+      _aiTimer?.cancel();
+    });
+    return GameState.initial(const GameMode.vsLocal());
+  }
+
   void startGame(GameMode mode) {
+    _aiTimer?.cancel();
     state = GameState.initial(mode);
   }
 
@@ -43,11 +53,11 @@ class GameNotifier extends StateNotifier<GameState> {
     if (state.isGameOver) return;
     if (state.isAiThinking) return;
 
-    final result = makeMove(state.board, row, col, state.currentPlayer);
+    final result = _makeMove(state.board, row, col, state.currentPlayer);
     result.when(
       success: (newBoard) {
         final move = Move(row: row, col: col, player: state.currentPlayer);
-        final gameResult = checkWinner(newBoard);
+        final gameResult = _checkWinner(newBoard);
         state = state.copyWith(
           board: newBoard,
           currentPlayer: state.currentPlayer.opponent,
@@ -74,9 +84,9 @@ class GameNotifier extends StateNotifier<GameState> {
     _aiTimer = Timer(AppDurations.aiDelay, () {
       if (state.isGameOver) return;
 
-      final aiMoveResult = aiMove(state.board, Player.o, mode.difficulty);
+      final aiMoveResult = _aiMove(state.board, Player.o, mode.difficulty);
       final newBoard = state.board.applyMove(aiMoveResult);
-      final gameResult = checkWinner(newBoard);
+      final gameResult = _checkWinner(newBoard);
 
       state = state.copyWith(
         board: newBoard,
@@ -92,19 +102,4 @@ class GameNotifier extends StateNotifier<GameState> {
     _aiTimer?.cancel();
     state = GameState.initial(state.mode);
   }
-
-  @override
-  void dispose() {
-    _aiTimer?.cancel();
-    super.dispose();
-  }
 }
-
-final gameNotifierProvider =
-    StateNotifierProvider.autoDispose<GameNotifier, GameState>((ref) {
-      return GameNotifier(
-        checkWinner: ref.read(checkWinnerUseCaseProvider),
-        makeMove: ref.read(makeMoveUseCaseProvider),
-        aiMove: ref.read(aiMoveUseCaseProvider),
-      );
-    });

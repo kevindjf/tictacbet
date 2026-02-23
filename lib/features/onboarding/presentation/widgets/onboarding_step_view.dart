@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
-import 'package:tic_tac_bet/core/theme/betclic_theme_extension.dart';
+import 'package:tic_tac_bet/core/extensions/betclic_theme_context_extension.dart';
 import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 import 'package:tic_tac_bet/features/onboarding/domain/entities/onboarding_step.dart';
 
+/// Visual content for a single onboarding step.
 class OnboardingStepView extends StatelessWidget {
   const OnboardingStepView({super.key, required this.step});
 
@@ -11,7 +12,7 @@ class OnboardingStepView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final betclic = Theme.of(context).extension<BetclicTheme>()!;
+    final betclic = context.betclic;
 
     final (icon, title, description, color) = switch (step) {
       OnboardingStep.welcome => (
@@ -50,7 +51,7 @@ class OnboardingStepView extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 80, color: color),
+        Icon(icon, size: AppDimensions.onboardingIconSize, color: color),
         const SizedBox(height: AppDimensions.spacingXL),
         Text(
           title,

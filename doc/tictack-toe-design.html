@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tic Tac Bet - Ultra Immersive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Montserrat:wght@800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-red: #ff0055;
+            --neon-blue: #00f2ff;
+            --neon-gold: #ffcc00;
+            --bg-deep: #050508;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-deep);
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+            overflow: hidden; /* Empêche le scroll navigateur */
+        }
+
+        /* --- FOND ANIMÉ --- */
+        .game-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050508 100%);
+            z-index: -1;
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(white 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.1;
+            animation: moveBg 20s linear infinite;
+        }
+
+        @keyframes moveBg {
+            from { transform: translateY(0); }
+            to { transform: translateY(-500px); }
+        }
+
+        /* --- HEADER --- */
+        .top-bar {
+            position: absolute;
+            top: 0; width: 100%;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .currency {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 8px 15px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-family: 'Orbitron';
+            font-size: 0.9rem;
+            color: var(--neon-gold);
+        }
+
+        /* --- CAROUSEL DE JEU (Horizontal Swipe) --- */
+        .game-scroller {
+            display: flex;
+            align-items: center;
+            height: 100vh;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding: 0 10%;
+            gap: 20px;
+            scrollbar-width: none;
+        }
+        .game-scroller::-webkit-scrollbar { display: none; }
+
+        .game-card {
+            min-width: 80vw;
+            height: 65vh;
+            scroll-snap-align: center;
+            position: relative;
+            border-radius: 30px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.8) 100%);
+        }
+
+        .card-image {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.6;
+            transition: 0.5s;
+        }
+
+        .game-card:active { transform: scale(0.95); }
+
+        /* Styles spécifiques par mode */
+        .mode-cash { border-bottom: 5px solid var(--neon-red); box-shadow: 0 20px 50px rgba(255,0,85,0.3); }
+        .mode-ia { border-bottom: 5px solid var(--neon-blue); box-shadow: 0 20px 50px rgba(0,242,255,0.2); }
+        .mode-local { border-bottom: 5px solid var(--neon-gold); box-shadow: 0 20px 50px rgba(255,204,0,0.2); }
+
+        .card-tag {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: var(--neon-red);
+            padding: 5px 15px;
+            font-size: 0.7rem;
+            font-weight: 900;
+            border-radius: 5px;
+            text-transform: uppercase;
+            animation: pulse 1.5s infinite;
+        }
+
+        .game-title {
+            font-family: 'Orbitron';
+            font-size: 2.2rem;
+            margin: 0;
+            line-height: 1;
+            text-transform: uppercase;
+            font-style: italic;
+        }
+
+        .game-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin: 10px 0 20px 0;
+        }
+
+        .play-btn {
+            background: white;
+            color: black;
+            text-align: center;
+            padding: 18px;
+            border-radius: 15px;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+
+        /* --- BARRE DE NAVIGATION "GAMING" --- */
+        .bottom-nav {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(15px);
+            padding: 10px 25px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-dot {
+            width: 10px; height: 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+        .nav-dot.active {
+            background: var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue);
+            transform: scale(1.3);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Leaderboard Overlay */
+        #leaderboard {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5,5,8,0.95);
+            z-index: 200;
+            display: none;
+            padding: 60px 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-bg">
+        <div class="particles"></div>
+    </div>
+
+    <div class="top-bar">
+        <div class="logo">TIC.TAC.<span>BET</span></div>
+        <div class="currency">12.50 €</div>
+    </div>
+
+    <!-- CAROUSEL DES MODES DE JEU -->
+    <div class="game-scroller" id="scroller">
+
+        <!-- MODE 1: CASH -->
+        <div class="game-card mode-cash">
+            <img class="card-image" src="https://images.unsplash.com/photo-1614028674026-a65e31bfd27c?auto=format&fit=crop&q=80&w=600">
+            <div class="card-tag">Live Jackpot</div>
+            <h2 class="game-title">CASH<br>BATTLE</h2>
+            <p class="game-desc">Affronte des joueurs réels et mise tes tokens.</p>
+            <div class="play-btn">Jouer (1.00€)</div>
+        </div>
+
+        <!-- MODE 2: IA -->
+        <div class="game-card mode-ia">
+            <img class="card-image" src="/Users/kevin/Downloads/background1.png">
+            <h2 class="game-title">CYBER<br>BOT</h2>
+            <p class="game-desc">Entraîne-toi contre l'IA la plus puissante.</p>
+            <div class="play-btn" style="background: var(--neon-blue);">Défier le Bot</div>
+        </div>
+
+        <!-- MODE 3: LOCAL -->
+        <div class="game-card mode-local">
+            <img class="card-image" src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80&w=600">
+            <h2 class="game-title">DUEL<br>1 VS 1</h2>
+            <p class="game-desc">Le classique. À deux sur le même écran.</p>
+            <div class="play-btn" style="background: var(--neon-gold);">Lancer le duel</div>
+        </div>
+
+    </div>
+
+    <!-- NAVIGATION TACTILE -->
+    <div class="bottom-nav">
+        <div class="nav-dot active"></div>
+        <div class="nav-dot"></div>
+        <div class="nav-dot"></div>
+    </div>
+
+    <script>
+        const scroller = document.getElementById('scroller');
+        const dots = document.querySelectorAll('.nav-dot');
+
+        // Animation simple pour les points de navigation lors du scroll
+        scroller.addEventListener('scroll', () => {
+            const index = Math.round(scroller.scrollLeft / window.innerWidth);
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        });
+
+        // Vibration haptique fictive (pour l'effet jeu mobile)
+        document.querySelectorAll('.play-btn').forEach(btn => {
+            btn.addEventListener('touchstart', () => {
+                if (window.navigator.vibrate) window.navigator.vibrate(50);
+            });
+        });
+    </script>
+</body>
+</html>

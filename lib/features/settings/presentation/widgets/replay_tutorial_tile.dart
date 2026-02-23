@@ -15,7 +15,7 @@ class ReplayTutorialTile extends ConsumerWidget {
         title: Text(context.l10n.replayTutorial),
         trailing: const Icon(Icons.chevron_right),
         onTap: () {
-          ref.read(onboardingNotifierProvider.notifier).reset();
+          ref.read(onboardingControllerProvider.notifier).reset();
           context.pushNamed('onboarding');
         },
       ),

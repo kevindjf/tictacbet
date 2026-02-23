@@ -1,48 +1,108 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tic_tac_bet/features/onboarding/data/datasources/onboarding_local_datasource.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' show Ref;
+import 'package:hive_ce/hive.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tic_tac_bet/features/onboarding/data/repositories/onboarding_repository_impl.dart';
 import 'package:tic_tac_bet/features/onboarding/domain/entities/onboarding_step.dart';
+import 'package:tic_tac_bet/features/onboarding/domain/repositories/onboarding_repository.dart';
+import 'package:tic_tac_bet/features/onboarding/domain/use_cases/check_onboarding_completed.dart';
+import 'package:tic_tac_bet/features/onboarding/domain/use_cases/complete_onboarding.dart';
+import 'package:tic_tac_bet/features/onboarding/domain/use_cases/reset_onboarding.dart';
 
-final onboardingDatasourceProvider = Provider<OnboardingLocalDatasource>((ref) {
-  return OnboardingLocalDatasource();
-});
+part 'onboarding_providers.g.dart';
 
-final onboardingCompletedProvider = StateProvider<bool>((ref) {
-  final ds = ref.read(onboardingDatasourceProvider);
-  return ds.isCompleted();
-});
+/// Opens existing Hive boxes for onboarding persistence.
+class OnboardingHiveBoxAccessor {
+  const OnboardingHiveBoxAccessor();
 
-class OnboardingNotifier extends StateNotifier<OnboardingStep?> {
-  OnboardingNotifier(this._datasource) : super(null);
+  Box<dynamic> onboardingBox() => Hive.box(OnboardingRepositoryImpl.boxName);
+}
 
-  final OnboardingLocalDatasource _datasource;
+final onboardingHiveBoxAccessorProvider = Provider<OnboardingHiveBoxAccessor>(
+  (ref) => const OnboardingHiveBoxAccessor(),
+);
+
+@Riverpod(keepAlive: true)
+/// Provides the Hive onboarding box used by the onboarding repository.
+Box<dynamic> onboardingBox(Ref ref) {
+  return ref.watch(onboardingHiveBoxAccessorProvider).onboardingBox();
+}
+
+@Riverpod(keepAlive: true)
+/// Provides the onboarding repository abstraction backed by Hive.
+OnboardingRepository onboardingRepository(Ref ref) {
+  return OnboardingRepositoryImpl(ref.watch(onboardingBoxProvider));
+}
+
+@Riverpod(keepAlive: true)
+/// Provides the use case that reads onboarding completion state.
+CheckOnboardingCompletedUseCase checkOnboardingCompletedUseCase(Ref ref) {
+  return CheckOnboardingCompletedUseCase(
+    ref.watch(onboardingRepositoryProvider),
+  );
+}
+
+@Riverpod(keepAlive: true)
+/// Provides the use case that marks onboarding as completed.
+CompleteOnboardingUseCase completeOnboardingUseCase(Ref ref) {
+  return CompleteOnboardingUseCase(ref.watch(onboardingRepositoryProvider));
+}
+
+@Riverpod(keepAlive: true)
+/// Provides the use case that resets onboarding completion state.
+ResetOnboardingUseCase resetOnboardingUseCase(Ref ref) {
+  return ResetOnboardingUseCase(ref.watch(onboardingRepositoryProvider));
+}
+
+@Riverpod(keepAlive: true)
+/// Stores the persisted onboarding completion flag.
+class OnboardingCompleted extends _$OnboardingCompleted {
+  @override
+  bool build() {
+    final useCase = ref.watch(checkOnboardingCompletedUseCaseProvider);
+    return useCase();
+  }
+
+  void setValue(bool value) => state = value;
+}
+
+@Riverpod(keepAlive: true)
+/// Controls the in-memory onboarding step flow.
+///
+/// `start -> next* -> complete`, with `skip` and `reset` helpers.
+class OnboardingController extends _$OnboardingController {
+  CompleteOnboardingUseCase get _completeUseCase =>
+      ref.read(completeOnboardingUseCaseProvider);
+  ResetOnboardingUseCase get _resetUseCase =>
+      ref.read(resetOnboardingUseCaseProvider);
+
+  @override
+  OnboardingStep? build() => null;
 
   void start() {
     state = OnboardingStep.welcome;
   }
 
-  void next() {
-    if (state == null) return;
-    state = state!.next;
-    if (state == null) {
-      complete();
+  Future<void> next() async {
+    final current = state;
+    if (current == null) return;
+    final nextStep = current.next;
+    if (nextStep == null) {
+      await complete();
+      return;
     }
+    state = nextStep;
   }
 
-  void skip() {
-    complete();
+  Future<void> skip() async {
+    await complete();
   }
 
-  void complete() {
+  Future<void> complete() async {
+    await _completeUseCase();
     state = null;
-    _datasource.markCompleted();
   }
 
-  void reset() {
-    _datasource.reset();
+  Future<void> reset() async {
+    await _resetUseCase();
   }
 }
-
-final onboardingNotifierProvider =
-    StateNotifierProvider<OnboardingNotifier, OnboardingStep?>((ref) {
-      return OnboardingNotifier(ref.read(onboardingDatasourceProvider));
-    });

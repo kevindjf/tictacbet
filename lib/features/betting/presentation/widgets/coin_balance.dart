@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
-import 'package:tic_tac_bet/core/theme/betclic_theme_extension.dart';
+import 'package:tic_tac_bet/core/extensions/betclic_theme_context_extension.dart';
 import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 
 class CoinBalance extends StatelessWidget {
@@ -10,7 +10,7 @@ class CoinBalance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final betclic = Theme.of(context).extension<BetclicTheme>()!;
+    final betclic = context.betclic;
 
     return Card(
       child: Padding(

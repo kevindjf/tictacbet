@@ -8,7 +8,7 @@ class ThemeToggle extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeModeProvider);
+    final themeMode = ref.watch(themeModeSettingProvider);
     final isDark = themeMode == ThemeMode.dark;
 
     return Card(
@@ -17,10 +17,10 @@ class ThemeToggle extends ConsumerWidget {
         subtitle: Text(isDark ? context.l10n.darkMode : context.l10n.lightMode),
         secondary: Icon(isDark ? Icons.dark_mode : Icons.light_mode),
         value: isDark,
-        onChanged: (value) {
-          ref.read(themeModeProvider.notifier).state = value
-              ? ThemeMode.dark
-              : ThemeMode.light;
+        onChanged: (value) async {
+          final mode = value ? ThemeMode.dark : ThemeMode.light;
+          ref.read(themeModeSettingProvider.notifier).setValue(mode);
+          await SettingsStorage.writeThemeMode(mode);
         },
       ),
     );

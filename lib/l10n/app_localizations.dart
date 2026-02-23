@@ -362,6 +362,18 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get language;
 
+  /// No description provided for @languageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get languageEnglish;
+
+  /// No description provided for @languageFrench.
+  ///
+  /// In en, this message translates to:
+  /// **'French'**
+  String get languageFrench;
+
   /// No description provided for @replayTutorial.
   ///
   /// In en, this message translates to:
@@ -409,6 +421,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Match accepted!'**
   String get matchAccepted;
+
+  /// No description provided for @simulateOpponent.
+  ///
+  /// In en, this message translates to:
+  /// **'Simulate opponent'**
+  String get simulateOpponent;
 
   /// No description provided for @noProposals.
   ///
@@ -655,6 +673,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Start playing!'**
   String get tutorialStartPlaying;
+
+  /// No description provided for @cashBattle.
+  ///
+  /// In en, this message translates to:
+  /// **'CASH\nBATTLE'**
+  String get cashBattle;
+
+  /// No description provided for @cashBattleDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenge real players and bet your tokens.'**
+  String get cashBattleDesc;
+
+  /// No description provided for @cashBattlePlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Play (1.00€)'**
+  String get cashBattlePlay;
+
+  /// No description provided for @liveJackpot.
+  ///
+  /// In en, this message translates to:
+  /// **'Live Jackpot'**
+  String get liveJackpot;
+
+  /// No description provided for @cyberBot.
+  ///
+  /// In en, this message translates to:
+  /// **'CYBER\nBOT'**
+  String get cyberBot;
+
+  /// No description provided for @cyberBotDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Train against the most powerful AI.'**
+  String get cyberBotDesc;
+
+  /// No description provided for @cyberBotPlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenge the Bot'**
+  String get cyberBotPlay;
+
+  /// No description provided for @duel1v1.
+  ///
+  /// In en, this message translates to:
+  /// **'DUEL\n1 VS 1'**
+  String get duel1v1;
+
+  /// No description provided for @duel1v1Desc.
+  ///
+  /// In en, this message translates to:
+  /// **'The classic. Two players, one screen.'**
+  String get duel1v1Desc;
+
+  /// No description provided for @duel1v1Play.
+  ///
+  /// In en, this message translates to:
+  /// **'Start the duel'**
+  String get duel1v1Play;
 }
 
 class _AppLocalizationsDelegate
