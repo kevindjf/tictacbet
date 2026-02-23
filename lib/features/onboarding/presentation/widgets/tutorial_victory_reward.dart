@@ -6,6 +6,7 @@ import 'package:tic_tac_bet/core/widgets/app_pattern_background.dart';
 import 'package:tic_tac_bet/features/onboarding/presentation/widgets/victory_coin_section.dart';
 import 'package:tic_tac_bet/features/onboarding/presentation/widgets/victory_trophy_section.dart';
 
+/// Final onboarding reward screen shown after the simulated victory.
 class TutorialVictoryReward extends StatefulWidget {
   const TutorialVictoryReward({super.key, required this.onComplete});
 
@@ -27,9 +28,10 @@ class _TutorialVictoryRewardState extends State<TutorialVictoryReward>
       vsync: this,
       duration: const Duration(milliseconds: 2000),
     );
-    _coinAnimation = IntTween(begin: 0, end: 1000).animate(
-      CurvedAnimation(parent: _coinController, curve: Curves.easeOut),
-    );
+    _coinAnimation = IntTween(
+      begin: 0,
+      end: 1000,
+    ).animate(CurvedAnimation(parent: _coinController, curve: Curves.easeOut));
     Future.delayed(const Duration(milliseconds: 800), () {
       if (mounted) _coinController.forward();
     });
@@ -58,12 +60,12 @@ class _TutorialVictoryRewardState extends State<TutorialVictoryReward>
                 VictoryCoinSection(coinAnimation: _coinAnimation),
                 const Spacer(),
                 SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: widget.onComplete,
-                    child: Text(context.l10n.tutorialStartPlaying),
-                  ),
-                )
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: widget.onComplete,
+                        child: Text(context.l10n.tutorialStartPlaying),
+                      ),
+                    )
                     .animate()
                     .slideY(
                       begin: 0.4,

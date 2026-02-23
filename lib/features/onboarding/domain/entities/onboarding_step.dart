@@ -1,3 +1,6 @@
+/// Represents each step of the onboarding flow.
+///
+/// Steps are ordered sequentially and end with the interactive simulation.
 enum OnboardingStep {
   welcome,
   board,

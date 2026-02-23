@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
 import 'package:tic_tac_bet/features/onboarding/domain/entities/onboarding_step.dart';
 
+/// Progress indicator for the onboarding steps.
 class StepIndicator extends StatelessWidget {
   const StepIndicator({
     super.key,
@@ -29,7 +30,7 @@ class StepIndicator extends StatelessWidget {
             color: isActive
                 ? Theme.of(context).colorScheme.primary
                 : Theme.of(context).colorScheme.outline,
-            borderRadius: BorderRadius.circular(AppDimensions.spacingXS),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusS),
           ),
         );
       }),

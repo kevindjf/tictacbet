@@ -29,7 +29,7 @@ class TutorialBoardGrid extends StatelessWidget {
     final betclic = Theme.of(context).extension<BetclicTheme>()!;
 
     final winResult = switch (result) {
-      GameResultWin() => result as GameResultWin,
+      final GameResultWin win => win,
       _ => null,
     };
     final winningLine = winResult?.winningLine;
@@ -57,9 +57,7 @@ class TutorialBoardGrid extends StatelessWidget {
               final col = index % 3;
               final player = board.cellAt(row, col);
               final isWinningCell =
-                  winningLine?.any(
-                    (pos) => pos.$1 == row && pos.$2 == col,
-                  ) ??
+                  winningLine?.any((pos) => pos.$1 == row && pos.$2 == col) ??
                   false;
 
               return Container(

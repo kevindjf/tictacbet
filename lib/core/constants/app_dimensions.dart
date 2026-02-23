@@ -28,6 +28,7 @@ abstract final class AppDimensions {
   // Cards
   static const double cardElevation = 2;
   static const double cardHeight = 120;
+  static const double coachCardMaxWidth = 320;
 
   // Game mode carousel
   static const double gameCardBorderRadius = 30;

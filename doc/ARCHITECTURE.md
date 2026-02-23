@@ -201,9 +201,9 @@ lib/
 │   │   ├── application/    # AuthProviders
 │   │   └── presentation/   # LoginPage, SignUpPage (simple)
 │   ├── onboarding/
-│   │   ├── domain/         # OnboardingStep, ShouldShowOnboarding
-│   │   ├── data/           # OnboardingLocalDatasource (flag Hive)
-│   │   ├── application/    # OnboardingNotifier
+│   │   ├── domain/         # OnboardingStep, OnboardingRepository, use cases
+│   │   ├── data/           # OnboardingRepositoryImpl (flag Hive)
+│   │   ├── application/    # OnboardingController + providers
 │   │   └── presentation/   # OnboardingPage, CoachOverlay, CoachTooltip, HighlightHole
 │   ├── home/
 │   │   └── presentation/   # HomePage, ModeCard, AppLogo

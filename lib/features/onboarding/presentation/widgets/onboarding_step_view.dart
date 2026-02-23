@@ -4,6 +4,7 @@ import 'package:tic_tac_bet/core/theme/betclic_theme_extension.dart';
 import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 import 'package:tic_tac_bet/features/onboarding/domain/entities/onboarding_step.dart';
 
+/// Visual content for a single onboarding step.
 class OnboardingStepView extends StatelessWidget {
   const OnboardingStepView({super.key, required this.step});
 

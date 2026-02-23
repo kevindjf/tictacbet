@@ -14,13 +14,15 @@ class VictoryTrophySection extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.emoji_events, size: AppDimensions.iconXL * 2, color: betclic.coinColor)
-            .animate()
-            .scale(
-              begin: const Offset(0, 0),
-              duration: const Duration(milliseconds: 600),
-              curve: Curves.elasticOut,
-            ),
+        Icon(
+          Icons.emoji_events,
+          size: AppDimensions.iconXL * 2,
+          color: betclic.coinColor,
+        ).animate().scale(
+          begin: const Offset(0, 0),
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.elasticOut,
+        ),
         const SizedBox(height: AppDimensions.spacingL),
         Text(
           context.l10n.tutorialVictoryTitle,

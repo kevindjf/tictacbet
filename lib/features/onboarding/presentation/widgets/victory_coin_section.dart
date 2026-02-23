@@ -4,6 +4,7 @@ import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
 import 'package:tic_tac_bet/core/theme/betclic_theme_extension.dart';
 import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 
+/// Animated coin reward block displayed on the onboarding victory screen.
 class VictoryCoinSection extends StatelessWidget {
   const VictoryCoinSection({super.key, required this.coinAnimation});
 
@@ -24,23 +25,22 @@ class VictoryCoinSection extends StatelessWidget {
               padding: const EdgeInsets.symmetric(
                 horizontal: AppDimensions.spacingS,
               ),
-              child: Icon(
-                Icons.monetization_on,
-                size: AppDimensions.iconL,
-                color: betclic.coinColor,
-              )
-                  .animate(delay: Duration(milliseconds: i * 100))
-                  .slideY(
-                    begin: -1.5,
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeOut,
-                  )
-                  .fadeIn(),
+              child:
+                  Icon(
+                        Icons.monetization_on,
+                        size: AppDimensions.iconL,
+                        color: betclic.coinColor,
+                      )
+                      .animate(delay: Duration(milliseconds: i * 100))
+                      .slideY(
+                        begin: -1.5,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeOut,
+                      )
+                      .fadeIn(),
             ),
           ),
-        ).animate().fadeIn(
-          delay: const Duration(milliseconds: 400),
-        ),
+        ).animate().fadeIn(delay: const Duration(milliseconds: 400)),
         const SizedBox(height: AppDimensions.spacingL),
         AnimatedBuilder(
           animation: coinAnimation,

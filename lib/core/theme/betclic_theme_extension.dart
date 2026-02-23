@@ -13,6 +13,11 @@ class BetclicTheme extends ThemeExtension<BetclicTheme> {
     required this.cellHighlightColor,
     required this.winOverlayColor,
     required this.lossOverlayColor,
+    required this.coachTextColor,
+    required this.coachTextShadowColor,
+    required this.coachCardBackgroundColor,
+    required this.coachCardBorderColor,
+    required this.coachCardShadowColor,
   });
 
   final Color playerXColor;
@@ -25,6 +30,11 @@ class BetclicTheme extends ThemeExtension<BetclicTheme> {
   final Color cellHighlightColor;
   final Color winOverlayColor;
   final Color lossOverlayColor;
+  final Color coachTextColor;
+  final Color coachTextShadowColor;
+  final Color coachCardBackgroundColor;
+  final Color coachCardBorderColor;
+  final Color coachCardShadowColor;
 
   static const dark = BetclicTheme(
     playerXColor: AppColors.playerX,
@@ -37,6 +47,11 @@ class BetclicTheme extends ThemeExtension<BetclicTheme> {
     cellHighlightColor: AppColors.darkSurface,
     winOverlayColor: Color(0x332EA043),
     lossOverlayColor: Color(0x33DA3633),
+    coachTextColor: Colors.white,
+    coachTextShadowColor: Color(0xCC000000),
+    coachCardBackgroundColor: Color(0xCC111827),
+    coachCardBorderColor: Color(0x47FFFFFF),
+    coachCardShadowColor: Color(0xAA000000),
   );
 
   static const light = BetclicTheme(
@@ -50,6 +65,11 @@ class BetclicTheme extends ThemeExtension<BetclicTheme> {
     cellHighlightColor: Color(0xFFF3F4F6),
     winOverlayColor: Color(0x332EA043),
     lossOverlayColor: Color(0x33DA3633),
+    coachTextColor: Colors.white,
+    coachTextShadowColor: Color(0xCC000000),
+    coachCardBackgroundColor: Color(0xCC111827),
+    coachCardBorderColor: Color(0x47FFFFFF),
+    coachCardShadowColor: Color(0xAA000000),
   );
 
   @override
@@ -64,6 +84,11 @@ class BetclicTheme extends ThemeExtension<BetclicTheme> {
     Color? cellHighlightColor,
     Color? winOverlayColor,
     Color? lossOverlayColor,
+    Color? coachTextColor,
+    Color? coachTextShadowColor,
+    Color? coachCardBackgroundColor,
+    Color? coachCardBorderColor,
+    Color? coachCardShadowColor,
   }) {
     return BetclicTheme(
       playerXColor: playerXColor ?? this.playerXColor,
@@ -76,6 +101,12 @@ class BetclicTheme extends ThemeExtension<BetclicTheme> {
       cellHighlightColor: cellHighlightColor ?? this.cellHighlightColor,
       winOverlayColor: winOverlayColor ?? this.winOverlayColor,
       lossOverlayColor: lossOverlayColor ?? this.lossOverlayColor,
+      coachTextColor: coachTextColor ?? this.coachTextColor,
+      coachTextShadowColor: coachTextShadowColor ?? this.coachTextShadowColor,
+      coachCardBackgroundColor:
+          coachCardBackgroundColor ?? this.coachCardBackgroundColor,
+      coachCardBorderColor: coachCardBorderColor ?? this.coachCardBorderColor,
+      coachCardShadowColor: coachCardShadowColor ?? this.coachCardShadowColor,
     );
   }
 
@@ -103,6 +134,27 @@ class BetclicTheme extends ThemeExtension<BetclicTheme> {
       lossOverlayColor: Color.lerp(
         lossOverlayColor,
         other.lossOverlayColor,
+        t,
+      )!,
+      coachTextColor: Color.lerp(coachTextColor, other.coachTextColor, t)!,
+      coachTextShadowColor: Color.lerp(
+        coachTextShadowColor,
+        other.coachTextShadowColor,
+        t,
+      )!,
+      coachCardBackgroundColor: Color.lerp(
+        coachCardBackgroundColor,
+        other.coachCardBackgroundColor,
+        t,
+      )!,
+      coachCardBorderColor: Color.lerp(
+        coachCardBorderColor,
+        other.coachCardBorderColor,
+        t,
+      )!,
+      coachCardShadowColor: Color.lerp(
+        coachCardShadowColor,
+        other.coachCardShadowColor,
         t,
       )!,
     );

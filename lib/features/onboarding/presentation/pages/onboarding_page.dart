@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,6 +13,10 @@ import 'package:tic_tac_bet/features/onboarding/presentation/widgets/onboarding_
 import 'package:tic_tac_bet/features/onboarding/presentation/widgets/step_indicator.dart';
 import 'package:tic_tac_bet/features/onboarding/presentation/widgets/tutorial_game_simulation.dart';
 
+/// Main page for the onboarding flow.
+///
+/// Renders standard step views or delegates to [TutorialGameSimulation] for
+/// the interactive simulation step.
 class OnboardingPage extends ConsumerStatefulWidget {
   const OnboardingPage({super.key});
 
@@ -19,34 +25,45 @@ class OnboardingPage extends ConsumerStatefulWidget {
 }
 
 class _OnboardingPageState extends ConsumerState<OnboardingPage> {
+  ProviderSubscription<OnboardingStep?>? _stepSubscription;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(onboardingControllerProvider.notifier).start();
     });
+    _stepSubscription = ref.listenManual<OnboardingStep?>(
+      onboardingControllerProvider,
+      (previous, next) {
+        if (previous != null && next == null && mounted) {
+          ref.read(onboardingCompletedProvider.notifier).setValue(true);
+          context.go('/');
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _stepSubscription?.close();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final currentStep = ref.watch(onboardingControllerProvider);
 
-    if (currentStep == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (context.mounted) {
-          ref.read(onboardingCompletedProvider.notifier).setValue(true);
-          context.go('/');
-        }
-      });
-      return const SizedBox.shrink();
-    }
+    if (currentStep == null) return const SizedBox.shrink();
 
     // The simulation step takes full control of its own layout.
     if (currentStep == OnboardingStep.simulation) {
       return Scaffold(
         body: TutorialGameSimulation(
           onComplete: () {
-            ref.read(onboardingControllerProvider.notifier).complete();
+            unawaited(
+              ref.read(onboardingControllerProvider.notifier).complete(),
+            );
           },
         ),
       );
@@ -63,7 +80,9 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                   alignment: Alignment.topRight,
                   child: TextButton(
                     onPressed: () {
-                      ref.read(onboardingControllerProvider.notifier).skip();
+                      unawaited(
+                        ref.read(onboardingControllerProvider.notifier).skip(),
+                      );
                     },
                     child: Text(context.l10n.skip),
                   ),
@@ -83,7 +102,9 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      ref.read(onboardingControllerProvider.notifier).next();
+                      unawaited(
+                        ref.read(onboardingControllerProvider.notifier).next(),
+                      );
                     },
                     child: Text(
                       currentStep == OnboardingStep.streaks
