@@ -9,6 +9,91 @@ Verdict: **REJET** (review initial)
 
 Statut apres corrections sur la branche `new-home-design` : **corrige (bloquants + warnings traites)**.
 
+---
+
+## Re-review (2026-02-23)
+
+Verdict: **APPROBATION CONDITIONNEE**
+
+Tous les 18 bloquants et 8 warnings originaux sont resolus. Aucun nouveau bloquant fonctionnel detecte.
+Tests onboarding: 10/10 passent. Verification locale additionnelle: `flutter test` = 74/74 passent.
+
+Mise a jour post re-review: `NEW-W01`, `NEW-W02`, `NEW-W03`, `NEW-C01` et `NEW-C02` corriges.
+
+### Nouveaux problemes detectes sur les corrections
+
+#### [NEW-W01] WARNING — Theming — `onboarding_step_view.dart` L.54
+**Probleme** : `size: 80` hardcode sur l'icone. Devrait utiliser une constante `AppDimensions`.
+**Code fautif** :
+```dart
+Icon(icon, size: 80, color: color),
+```
+**Correction attendue** : Ajouter une constante dans `AppDimensions` (ex: `iconXXL` ou `onboardingIconSize`) et l'utiliser ici.
+**Regle** : Section 4 — Theming (Zero magic number)
+
+#### [NEW-W02] WARNING — Architecture — `onboarding_providers.dart` L.15-16
+**Probleme** : Le provider `onboardingBox` accede directement a `Hive.box()` (singleton static). Meme probleme que [B07] mais deplace d'un niveau. Le provider est overridable en test donc acceptable, mais pas ideal.
+**Code fautif** :
+```dart
+Box<dynamic> onboardingBox(Ref ref) {
+  return Hive.box(OnboardingRepositoryImpl.boxName);
+}
+```
+**Suggestion** : Acceptable en l'etat car overridable via `ProviderScope.overrides` dans les tests. A noter pour une future amelioration.
+**Regle** : Section 9 — Testabilite
+
+#### [NEW-W03] WARNING — Architecture — Use cases sans injection constructeur
+**Probleme** : Les use cases (`CheckOnboardingCompletedUseCase`, etc.) recoivent le repository en parametre de `call()` au lieu de l'injecter dans le constructeur. Ca force le controller a connaitre le repository ET le use case.
+**Code fautif** :
+```dart
+// Dans le controller :
+await _completeUseCase(_repository);
+```
+**Correction attendue** :
+```dart
+// Use case avec injection constructeur :
+class CompleteOnboardingUseCase {
+  const CompleteOnboardingUseCase(this._repository);
+  final OnboardingRepository _repository;
+  Future<void> call() => _repository.markCompleted();
+}
+
+// Provider :
+@Riverpod(keepAlive: true)
+CompleteOnboardingUseCase completeOnboardingUseCase(Ref ref) {
+  return CompleteOnboardingUseCase(ref.watch(onboardingRepositoryProvider));
+}
+
+// Controller simplifie — ne connait que les use cases :
+Future<void> complete() async {
+  state = null;
+  await ref.read(completeOnboardingUseCaseProvider)();
+}
+```
+**Regle** : Section 1 — Architecture Clean (Use cases)
+
+#### [NEW-C01] CONSEIL — Documentation — `betclic_theme_extension.dart`
+**Probleme** : Les 5 nouvelles proprietes coach (`coachTextColor`, `coachTextShadowColor`, `coachCardBackgroundColor`, `coachCardBorderColor`, `coachCardShadowColor`) n'ont pas de doc comments. Mineur car les noms sont explicites.
+**Regle** : Section 8 — Documentation
+
+#### [NEW-C02] CONSEIL — Null Safety — Plusieurs widgets
+**Probleme** : `Theme.of(context).extension<BetclicTheme>()!` avec bang operator persiste dans plusieurs widgets. Garanti par le setup du theme mais un helper `context.betclic` serait plus safe et DRY.
+**Suggestion** : Creer une extension dans `core/extensions/` :
+```dart
+extension BetclicThemeExtension on BuildContext {
+  BetclicTheme get betclic => Theme.of(this).extension<BetclicTheme>()!;
+}
+```
+**Regle** : Section 6 — Null Safety + Section 7 — Duplication
+
+### Checklist agent dev (re-review)
+
+- [x] [NEW-W01] `onboarding_step_view.dart` L.54 — Remplacer `size: 80` par `AppDimensions.onboardingIconSize` (ou equivalent)
+- [x] [NEW-W02] `onboarding_providers.dart` L.15-16 — Supprimer l'acces direct a `Hive.box()` dans le provider via une abstraction overridable
+- [x] [NEW-W03] Refactorer les 3 use cases pour injecter le repository au constructeur, et simplifier le controller
+- [x] [NEW-C01] Ajouter des doc comments sur les 5 proprietes coach dans `BetclicTheme`
+- [x] [NEW-C02] Creer un helper `context.betclic` dans `core/extensions/` et l'utiliser partout
+
 ### Ce qui a ete corrige
 
 - `lib/app.dart`

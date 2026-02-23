@@ -10,10 +10,21 @@ import 'package:tic_tac_bet/features/onboarding/domain/use_cases/reset_onboardin
 
 part 'onboarding_providers.g.dart';
 
+/// Opens existing Hive boxes for onboarding persistence.
+class OnboardingHiveBoxAccessor {
+  const OnboardingHiveBoxAccessor();
+
+  Box<dynamic> onboardingBox() => Hive.box(OnboardingRepositoryImpl.boxName);
+}
+
+final onboardingHiveBoxAccessorProvider = Provider<OnboardingHiveBoxAccessor>(
+  (ref) => const OnboardingHiveBoxAccessor(),
+);
+
 @Riverpod(keepAlive: true)
 /// Provides the Hive onboarding box used by the onboarding repository.
 Box<dynamic> onboardingBox(Ref ref) {
-  return Hive.box(OnboardingRepositoryImpl.boxName);
+  return ref.watch(onboardingHiveBoxAccessorProvider).onboardingBox();
 }
 
 @Riverpod(keepAlive: true)
@@ -25,19 +36,21 @@ OnboardingRepository onboardingRepository(Ref ref) {
 @Riverpod(keepAlive: true)
 /// Provides the use case that reads onboarding completion state.
 CheckOnboardingCompletedUseCase checkOnboardingCompletedUseCase(Ref ref) {
-  return CheckOnboardingCompletedUseCase();
+  return CheckOnboardingCompletedUseCase(
+    ref.watch(onboardingRepositoryProvider),
+  );
 }
 
 @Riverpod(keepAlive: true)
 /// Provides the use case that marks onboarding as completed.
 CompleteOnboardingUseCase completeOnboardingUseCase(Ref ref) {
-  return CompleteOnboardingUseCase();
+  return CompleteOnboardingUseCase(ref.watch(onboardingRepositoryProvider));
 }
 
 @Riverpod(keepAlive: true)
 /// Provides the use case that resets onboarding completion state.
 ResetOnboardingUseCase resetOnboardingUseCase(Ref ref) {
-  return ResetOnboardingUseCase();
+  return ResetOnboardingUseCase(ref.watch(onboardingRepositoryProvider));
 }
 
 @Riverpod(keepAlive: true)
@@ -45,9 +58,8 @@ ResetOnboardingUseCase resetOnboardingUseCase(Ref ref) {
 class OnboardingCompleted extends _$OnboardingCompleted {
   @override
   bool build() {
-    final repository = ref.watch(onboardingRepositoryProvider);
     final useCase = ref.watch(checkOnboardingCompletedUseCaseProvider);
-    return useCase(repository);
+    return useCase();
   }
 
   void setValue(bool value) => state = value;
@@ -58,8 +70,6 @@ class OnboardingCompleted extends _$OnboardingCompleted {
 ///
 /// `start -> next* -> complete`, with `skip` and `reset` helpers.
 class OnboardingController extends _$OnboardingController {
-  OnboardingRepository get _repository =>
-      ref.read(onboardingRepositoryProvider);
   CompleteOnboardingUseCase get _completeUseCase =>
       ref.read(completeOnboardingUseCaseProvider);
   ResetOnboardingUseCase get _resetUseCase =>
@@ -75,10 +85,12 @@ class OnboardingController extends _$OnboardingController {
   Future<void> next() async {
     final current = state;
     if (current == null) return;
-    state = current.next;
-    if (state == null) {
+    final nextStep = current.next;
+    if (nextStep == null) {
       await complete();
+      return;
     }
+    state = nextStep;
   }
 
   Future<void> skip() async {
@@ -86,11 +98,11 @@ class OnboardingController extends _$OnboardingController {
   }
 
   Future<void> complete() async {
+    await _completeUseCase();
     state = null;
-    await _completeUseCase(_repository);
   }
 
   Future<void> reset() async {
-    await _resetUseCase(_repository);
+    await _resetUseCase();
   }
 }

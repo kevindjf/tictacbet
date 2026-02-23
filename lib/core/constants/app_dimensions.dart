@@ -24,6 +24,7 @@ abstract final class AppDimensions {
   static const double iconM = 24;
   static const double iconL = 32;
   static const double iconXL = 48;
+  static const double onboardingIconSize = 80;
 
   // Cards
   static const double cardElevation = 2;

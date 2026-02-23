@@ -30,10 +30,20 @@ class BetclicTheme extends ThemeExtension<BetclicTheme> {
   final Color cellHighlightColor;
   final Color winOverlayColor;
   final Color lossOverlayColor;
+
+  /// Foreground color for tutorial coach text overlays.
   final Color coachTextColor;
+
+  /// Shadow color applied to tutorial coach text for readability.
   final Color coachTextShadowColor;
+
+  /// Background color of the tutorial coach message card.
   final Color coachCardBackgroundColor;
+
+  /// Border color of the tutorial coach message card.
   final Color coachCardBorderColor;
+
+  /// Drop shadow color of the tutorial coach message card.
   final Color coachCardShadowColor;
 
   static const dark = BetclicTheme(

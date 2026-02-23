@@ -2,6 +2,10 @@ import 'package:tic_tac_bet/features/onboarding/domain/repositories/onboarding_r
 
 /// Returns whether onboarding has already been completed.
 class CheckOnboardingCompletedUseCase {
+  const CheckOnboardingCompletedUseCase(this._repository);
+
+  final OnboardingRepository _repository;
+
   /// Evaluates onboarding completion state from the repository.
-  bool call(OnboardingRepository repository) => repository.isCompleted();
+  bool call() => _repository.isCompleted();
 }

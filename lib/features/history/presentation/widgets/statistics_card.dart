@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
-import 'package:tic_tac_bet/core/theme/betclic_theme_extension.dart';
+import 'package:tic_tac_bet/core/extensions/betclic_theme_context_extension.dart';
 import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 import 'package:tic_tac_bet/features/history/domain/entities/game_statistics.dart';
 import 'package:tic_tac_bet/features/history/presentation/widgets/stat_item.dart';
@@ -12,7 +12,7 @@ class StatisticsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final betclic = Theme.of(context).extension<BetclicTheme>()!;
+    final betclic = context.betclic;
     final winRatePercent = (statistics.winRate * 100).toStringAsFixed(0);
 
     return Card(

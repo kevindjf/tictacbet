@@ -3,7 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
-import 'package:tic_tac_bet/core/theme/betclic_theme_extension.dart';
+import 'package:tic_tac_bet/core/extensions/betclic_theme_context_extension.dart';
 import 'package:tic_tac_bet/core/theme/app_colors.dart';
 import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 import 'package:tic_tac_bet/features/betting/application/providers/betting_providers.dart';
@@ -15,7 +15,7 @@ class HomeTopBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final wallet = ref.watch(walletControllerProvider);
     final theme = Theme.of(context);
-    final betclic = theme.extension<BetclicTheme>()!;
+    final betclic = context.betclic;
 
     return SafeArea(
       bottom: false,
@@ -49,7 +49,9 @@ class HomeTopBar extends ConsumerWidget {
               decoration: BoxDecoration(
                 color: theme.colorScheme.onSurface.withAlpha(20),
                 borderRadius: BorderRadius.circular(50),
-                border: Border.all(color: theme.colorScheme.onSurface.withAlpha(50)),
+                border: Border.all(
+                  color: theme.colorScheme.onSurface.withAlpha(50),
+                ),
               ),
               child: Text(
                 '${wallet.balance}',

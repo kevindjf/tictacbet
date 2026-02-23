@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
-import 'package:tic_tac_bet/core/theme/betclic_theme_extension.dart';
+import 'package:tic_tac_bet/core/extensions/betclic_theme_context_extension.dart';
 import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 import 'package:tic_tac_bet/core/widgets/app_pattern_background.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/board.dart';
@@ -116,7 +116,7 @@ class _TutorialGameSimulationState extends State<TutorialGameSimulation> {
   }
 
   List<TargetFocus> _coachTargets(ThemeData theme) {
-    final betclic = theme.extension<BetclicTheme>()!;
+    final betclic = context.betclic;
     final overlayTextColor = betclic.coachTextColor;
     final textStyle = theme.textTheme.bodyMedium!.copyWith(
       color: overlayTextColor,

@@ -2,7 +2,10 @@ import 'package:tic_tac_bet/features/onboarding/domain/repositories/onboarding_r
 
 /// Persists onboarding completion.
 class CompleteOnboardingUseCase {
+  const CompleteOnboardingUseCase(this._repository);
+
+  final OnboardingRepository _repository;
+
   /// Marks onboarding as completed in persistence.
-  Future<void> call(OnboardingRepository repository) =>
-      repository.markCompleted();
+  Future<void> call() => _repository.markCompleted();
 }
