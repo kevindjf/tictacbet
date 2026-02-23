@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
+import 'package:tic_tac_bet/core/theme/app_colors.dart';
 
 class GameModeCardTag extends StatelessWidget {
   const GameModeCardTag({super.key, required this.tag, required this.color});
 
   final String tag;
   final Color color;
-  static const _accessibleDarkText = Color(0xFF111111);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class GameModeCardTag extends StatelessWidget {
       child: Text(
         tag.toUpperCase(),
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-          color: _accessibleDarkText,
+          color: AppColors.accessibleDark,
           fontWeight: FontWeight.w900,
           letterSpacing: 1,
         ),

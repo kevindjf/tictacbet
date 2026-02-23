@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
 
 class HomeCardSlot extends StatelessWidget {
   const HomeCardSlot({super.key, required this.child});
@@ -7,6 +8,9 @@ class HomeCardSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(alignment: Alignment.bottomCenter, child: child);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingS),
+      child: Align(alignment: Alignment.bottomCenter, child: child),
+    );
   }
 }

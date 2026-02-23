@@ -15,7 +15,9 @@ abstract final class AppColors {
 
   // Accents
   static const Color betclicRed = Color(0xFFE63946);
-  static const Color betclicRedButton = Color(0xFFD92D3A); // better contrast with white
+  static const Color betclicRedButton = Color(
+    0xFFD92D3A,
+  ); // better contrast with white
   static const Color gold = Color(0xFFFFD700);
   static const Color goldDark = Color(0xFFB8960C);
 
@@ -27,6 +29,9 @@ abstract final class AppColors {
   static const Color neonRed = Color(0xFFFF0055);
   static const Color neonBlue = Color(0xFF00F2FF);
   static const Color neonGold = Color(0xFFFFCC00);
+  static const Color neonRedLight = Color(0xFFFFE082);
+  static const Color neonBlueLight = Color(0xFFA7F3FF);
+  static const Color neonGoldLight = Color(0xFFFFF2A8);
 
   // Semantic
   static const Color success = Color(0xFF2EA043);
@@ -38,4 +43,5 @@ abstract final class AppColors {
   static const Color darkTextSecondary = Color(0xFF8B949E);
   static const Color lightTextPrimary = Color(0xFF1F2328);
   static const Color lightTextSecondary = Color(0xFF656D76);
+  static const Color accessibleDark = Color(0xFF111111);
 }

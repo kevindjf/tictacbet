@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tic_tac_bet/core/theme/app_colors.dart';
+import 'package:tic_tac_bet/core/theme/app_typography_theme_extension.dart';
 import 'package:tic_tac_bet/core/theme/betclic_theme_extension.dart';
 
 abstract final class AppTheme {
@@ -37,6 +38,9 @@ abstract final class AppTheme {
     required BetclicTheme betclicTheme,
   }) {
     final isDark = brightness == Brightness.dark;
+    final typographyTheme = isDark
+        ? AppTypographyTheme.dark
+        : AppTypographyTheme.light;
     final colorScheme = ColorScheme(
       brightness: brightness,
       primary: AppColors.betclicRed,
@@ -132,7 +136,7 @@ abstract final class AppTheme {
         inactiveTrackColor: border,
         overlayColor: AppColors.betclicRed.withAlpha(30),
       ),
-      extensions: [betclicTheme],
+      extensions: [betclicTheme, typographyTheme],
     );
   }
 

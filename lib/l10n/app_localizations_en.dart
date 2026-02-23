@@ -139,7 +139,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
+  String get rulesSectionTitle => 'Rules';
+
+  @override
+  String get rulesSectionIntro => 'Quick reminder of match outcomes:';
+
+  @override
+  String get rulesWinDescription =>
+      'Align 3 of your symbols before your opponent.';
+
+  @override
+  String get rulesLossDescription =>
+      'Your opponent aligns 3 symbols before you.';
+
+  @override
+  String get rulesDrawDescription =>
+      'The board is full and no player aligned 3 symbols.';
+
+  @override
   String get theme => 'Theme';
+
+  @override
+  String get themeSystem => 'System';
 
   @override
   String get darkMode => 'Dark mode';
@@ -158,6 +179,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get replayTutorial => 'Replay tutorial';
+
+  @override
+  String get replayTutorialConfirmTitle => 'Replay tutorial?';
+
+  @override
+  String get replayTutorialConfirmMessage =>
+      'This will reset the tutorial progress and open onboarding again.';
 
   @override
   String get lobby => 'Lobby';
@@ -322,7 +350,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cashBattle => 'CASH\nBATTLE';
 
   @override
-  String get cashBattleDesc => 'Challenge real players and bet your tokens.';
+  String get cashBattleTagline => 'All In';
+
+  @override
+  String get cashBattleDesc => 'Bet your coins against real opponents.';
 
   @override
   String get cashBattlePlay => 'Play (1.00€)';
@@ -334,7 +365,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cyberBot => 'CYBER\nBOT';
 
   @override
-  String get cyberBotDesc => 'Train against the most powerful AI.';
+  String get cyberBotTagline => 'Solo Training';
+
+  @override
+  String get cyberBotDesc => 'Sharpen your skills against the AI.';
 
   @override
   String get cyberBotPlay => 'Challenge the Bot';
@@ -343,7 +377,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get duel1v1 => 'DUEL\n1 VS 1';
 
   @override
-  String get duel1v1Desc => 'The classic. Two players, one screen.';
+  String get duel1v1Tagline => 'Face to Face';
+
+  @override
+  String get duel1v1Desc => 'Two players, one screen, no mercy.';
 
   @override
   String get duel1v1Play => 'Start the duel';

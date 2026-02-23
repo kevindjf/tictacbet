@@ -6,7 +6,7 @@ part of 'onboarding_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$onboardingBoxHash() => r'c74cc6b3afe79c14a6fc13696d37e1f18348066e';
+String _$onboardingBoxHash() => r'28840b1dbe35a134e9ae7f45a8a577f1a70de1a9';
 
 /// Provides the Hive onboarding box used by the onboarding repository.
 ///
@@ -46,7 +46,7 @@ final onboardingRepositoryProvider = Provider<OnboardingRepository>.internal(
 // ignore: unused_element
 typedef OnboardingRepositoryRef = ProviderRef<OnboardingRepository>;
 String _$checkOnboardingCompletedUseCaseHash() =>
-    r'37d2505c98d08ea4e683ea1c5ec43407c1a02d3e';
+    r'293e48be7d6ae5713aab516cd0a2542135c63659';
 
 /// Provides the use case that reads onboarding completion state.
 ///
@@ -68,7 +68,7 @@ final checkOnboardingCompletedUseCaseProvider =
 typedef CheckOnboardingCompletedUseCaseRef =
     ProviderRef<CheckOnboardingCompletedUseCase>;
 String _$completeOnboardingUseCaseHash() =>
-    r'89a18f2999b7a214dc16f5faa54a8c81add24420';
+    r'03feed5c8cd3d66555d4c154bf523ab992f329e6';
 
 /// Provides the use case that marks onboarding as completed.
 ///
@@ -89,7 +89,7 @@ final completeOnboardingUseCaseProvider =
 // ignore: unused_element
 typedef CompleteOnboardingUseCaseRef = ProviderRef<CompleteOnboardingUseCase>;
 String _$resetOnboardingUseCaseHash() =>
-    r'2ee930ad54d3ee9336006ac8646237227db317a6';
+    r'ce695ead4ff6183b15998739e71327d8808c9c62';
 
 /// Provides the use case that resets onboarding completion state.
 ///
@@ -110,7 +110,7 @@ final resetOnboardingUseCaseProvider =
 // ignore: unused_element
 typedef ResetOnboardingUseCaseRef = ProviderRef<ResetOnboardingUseCase>;
 String _$onboardingCompletedHash() =>
-    r'7cf95b6e57aa49c5aaba3a1b9262983111dabb3b';
+    r'12ac90d36427d3b6e32639eb8387f204e81e9c73';
 
 /// Stores the persisted onboarding completion flag.
 ///
@@ -129,7 +129,7 @@ final onboardingCompletedProvider =
 
 typedef _$OnboardingCompleted = Notifier<bool>;
 String _$onboardingControllerHash() =>
-    r'7f32121871acd17619083f33da8f52c27674fb12';
+    r'f0f91e6a00c83a53f6a9141e44d5cdc4b45172fe';
 
 /// Controls the in-memory onboarding step flow.
 ///

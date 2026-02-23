@@ -338,11 +338,47 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settings;
 
+  /// No description provided for @rulesSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules'**
+  String get rulesSectionTitle;
+
+  /// No description provided for @rulesSectionIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick reminder of match outcomes:'**
+  String get rulesSectionIntro;
+
+  /// No description provided for @rulesWinDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Align 3 of your symbols before your opponent.'**
+  String get rulesWinDescription;
+
+  /// No description provided for @rulesLossDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Your opponent aligns 3 symbols before you.'**
+  String get rulesLossDescription;
+
+  /// No description provided for @rulesDrawDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'The board is full and no player aligned 3 symbols.'**
+  String get rulesDrawDescription;
+
   /// No description provided for @theme.
   ///
   /// In en, this message translates to:
   /// **'Theme'**
   String get theme;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get themeSystem;
 
   /// No description provided for @darkMode.
   ///
@@ -379,6 +415,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Replay tutorial'**
   String get replayTutorial;
+
+  /// No description provided for @replayTutorialConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Replay tutorial?'**
+  String get replayTutorialConfirmTitle;
+
+  /// No description provided for @replayTutorialConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This will reset the tutorial progress and open onboarding again.'**
+  String get replayTutorialConfirmMessage;
 
   /// No description provided for @lobby.
   ///
@@ -680,10 +728,16 @@ abstract class AppLocalizations {
   /// **'CASH\nBATTLE'**
   String get cashBattle;
 
+  /// No description provided for @cashBattleTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'All In'**
+  String get cashBattleTagline;
+
   /// No description provided for @cashBattleDesc.
   ///
   /// In en, this message translates to:
-  /// **'Challenge real players and bet your tokens.'**
+  /// **'Bet your coins against real opponents.'**
   String get cashBattleDesc;
 
   /// No description provided for @cashBattlePlay.
@@ -704,10 +758,16 @@ abstract class AppLocalizations {
   /// **'CYBER\nBOT'**
   String get cyberBot;
 
+  /// No description provided for @cyberBotTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Solo Training'**
+  String get cyberBotTagline;
+
   /// No description provided for @cyberBotDesc.
   ///
   /// In en, this message translates to:
-  /// **'Train against the most powerful AI.'**
+  /// **'Sharpen your skills against the AI.'**
   String get cyberBotDesc;
 
   /// No description provided for @cyberBotPlay.
@@ -722,10 +782,16 @@ abstract class AppLocalizations {
   /// **'DUEL\n1 VS 1'**
   String get duel1v1;
 
+  /// No description provided for @duel1v1Tagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Face to Face'**
+  String get duel1v1Tagline;
+
   /// No description provided for @duel1v1Desc.
   ///
   /// In en, this message translates to:
-  /// **'The classic. Two players, one screen.'**
+  /// **'Two players, one screen, no mercy.'**
   String get duel1v1Desc;
 
   /// No description provided for @duel1v1Play.

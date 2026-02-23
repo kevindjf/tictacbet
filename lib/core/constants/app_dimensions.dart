@@ -34,6 +34,18 @@ abstract final class AppDimensions {
   // Game mode carousel
   static const double gameCardBorderRadius = 30;
   static const double gameCardHeightFraction = 0.58;
+  static const double topBarIconButtonSize = 40;
+  static const double radiusPill = 50;
+  static const double heroTitleGap = 6;
+  static const double heroTitleWordGap = 8;
+  static const double pageIndicatorDotSize = 10;
+  static const double settingsRulesMiniBoardSize = 104;
+  static const double settingsRulesMiniBoardGap = 5;
+  static const double settingsRulesMiniBoardPadding = 2;
+  static const double settingsRulesMiniCellRadius = 7;
+  static const double settingsRulesMiniMarkSize = 17;
+  static const double settingsRulesMiniMarkOStroke = 2.2;
+  static const double settingsRulesMiniMarkXStroke = 2.4;
 
   // Buttons
   static const double buttonHeight = 48;

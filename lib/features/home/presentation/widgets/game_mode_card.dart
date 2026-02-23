@@ -9,7 +9,7 @@ import 'package:tic_tac_bet/features/home/presentation/widgets/game_mode_card_ta
 class GameModeCard extends StatefulWidget {
   const GameModeCard({
     super.key,
-    required this.title,
+    required this.tagline,
     required this.description,
     required this.buttonLabel,
     required this.accentColor,
@@ -17,7 +17,7 @@ class GameModeCard extends StatefulWidget {
     this.tag,
   });
 
-  final String title;
+  final String tagline;
   final String description;
   final String buttonLabel;
   final Color accentColor;
@@ -29,12 +29,11 @@ class GameModeCard extends StatefulWidget {
 }
 
 class _GameModeCardState extends State<GameModeCard> {
+  // Local press feedback is view-only state; no provider or controller is needed.
   bool _pressed = false;
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return GestureDetector(
           onTapDown: (_) => setState(() => _pressed = true),
           onTapUp: (_) {
@@ -46,7 +45,7 @@ class _GameModeCardState extends State<GameModeCard> {
             scale: _pressed ? 0.95 : 1.0,
             duration: AppDurations.fast,
             child: Container(
-              width: screenWidth * 0.80,
+              width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(
                   AppDimensions.gameCardBorderRadius,
@@ -90,16 +89,16 @@ class _GameModeCardState extends State<GameModeCard> {
                           const SizedBox(height: AppDimensions.spacingM),
                         ],
                         Text(
-                          widget.title,
-                          style: Theme.of(context).textTheme.displaySmall
+                          widget.tagline.toUpperCase(),
+                          style: Theme.of(context).textTheme.titleLarge
                               ?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurface,
+                                color: widget.accentColor,
                                 fontWeight: FontWeight.w900,
-                                height: 0.95,
                                 fontStyle: FontStyle.italic,
+                                letterSpacing: 1.2,
                               ),
                         ),
-                        const SizedBox(height: AppDimensions.spacingS),
+                        const SizedBox(height: AppDimensions.spacingXS),
                         Text(
                           widget.description,
                           style: Theme.of(context).textTheme.bodyMedium
@@ -113,6 +112,7 @@ class _GameModeCardState extends State<GameModeCard> {
                         GameModeCardPlayButton(
                           label: widget.buttonLabel,
                           color: widget.accentColor,
+                          isPressed: _pressed,
                         ),
                       ],
                     ),

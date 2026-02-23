@@ -139,7 +139,29 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settings => 'Paramètres';
 
   @override
+  String get rulesSectionTitle => 'Règles';
+
+  @override
+  String get rulesSectionIntro =>
+      'Rappel rapide des issues possibles d\'une partie :';
+
+  @override
+  String get rulesWinDescription =>
+      'Aligne 3 de tes symboles avant ton adversaire.';
+
+  @override
+  String get rulesLossDescription =>
+      'Ton adversaire aligne 3 symboles avant toi.';
+
+  @override
+  String get rulesDrawDescription =>
+      'Le plateau est plein et personne n\'aligne 3 symboles.';
+
+  @override
   String get theme => 'Thème';
+
+  @override
+  String get themeSystem => 'Système';
 
   @override
   String get darkMode => 'Mode sombre';
@@ -158,6 +180,13 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get replayTutorial => 'Rejouer le tutoriel';
+
+  @override
+  String get replayTutorialConfirmTitle => 'Rejouer le tutoriel ?';
+
+  @override
+  String get replayTutorialConfirmMessage =>
+      'Cela réinitialisera la progression du tutoriel et rouvrira l\'onboarding.';
 
   @override
   String get lobby => 'Lobby';
@@ -324,7 +353,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get cashBattle => 'CASH\nBATTLE';
 
   @override
-  String get cashBattleDesc => 'Affronte des joueurs réels et mise tes tokens.';
+  String get cashBattleTagline => 'All In';
+
+  @override
+  String get cashBattleDesc => 'Mise tes coins contre de vrais adversaires.';
 
   @override
   String get cashBattlePlay => 'Jouer (1.00€)';
@@ -336,7 +368,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get cyberBot => 'CYBER\nBOT';
 
   @override
-  String get cyberBotDesc => 'Entraîne-toi contre l\'IA la plus puissante.';
+  String get cyberBotTagline => 'Solo Training';
+
+  @override
+  String get cyberBotDesc => 'Affûte tes skills contre l\'IA.';
 
   @override
   String get cyberBotPlay => 'Défier le Bot';
@@ -345,7 +380,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get duel1v1 => 'DUEL\n1 VS 1';
 
   @override
-  String get duel1v1Desc => 'Le classique. À deux sur le même écran.';
+  String get duel1v1Tagline => 'Face à Face';
+
+  @override
+  String get duel1v1Desc => 'Deux joueurs, un écran, sans pitié.';
 
   @override
   String get duel1v1Play => 'Lancer le duel';

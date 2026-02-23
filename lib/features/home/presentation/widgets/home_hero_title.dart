@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
+import 'package:tic_tac_bet/core/theme/app_shadows.dart';
 
 class HomeHeroTitleData {
   const HomeHeroTitleData({
@@ -25,10 +26,9 @@ class HomeHeroTitleData {
 }
 
 class HomeHeroTitle extends StatelessWidget {
-  const HomeHeroTitle({
-    super.key,
-    required this.data,
-  });
+  const HomeHeroTitle({super.key, required this.data});
+
+  static const double titleTiltAngle = -0.045;
 
   final HomeHeroTitleData data;
 
@@ -46,38 +46,35 @@ class HomeHeroTitle extends StatelessWidget {
           final boltSize = math.min(44.0, math.max(24.0, width * 0.1));
 
           return Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Center(
-                child: _PrimaryTitle(
-                  text: data.line1,
-                  fontSize: line1Size,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Center(
-                child: Transform.rotate(
-                  angle: _titleTiltAngle,
-                  child: _GradientTitleLine(
-                    text: data.line2,
-                    fontSize: line2Size,
-                    accentColor: data.accentColor,
-                    secondaryAccentColor: data.secondaryAccentColor,
-                    showBolt: data.showBolt,
-                    boltSize: boltSize,
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Center(
+                    child: _PrimaryTitle(text: data.line1, fontSize: line1Size),
                   ),
-                ),
-              ),
-              const SizedBox(height: AppDimensions.spacingS),
-              _SubtitleBlock(
-                textTheme: textTheme,
-                line1: data.subtitleLine1,
-                line2: data.subtitleLine2,
-                accentColor: data.accentColor,
-              ),
-            ],
-          )
+                  const SizedBox(height: AppDimensions.heroTitleGap),
+                  Center(
+                    child: Transform.rotate(
+                      angle: HomeHeroTitle.titleTiltAngle,
+                      child: _GradientTitleLine(
+                        text: data.line2,
+                        fontSize: line2Size,
+                        accentColor: data.accentColor,
+                        secondaryAccentColor: data.secondaryAccentColor,
+                        showBolt: data.showBolt,
+                        boltSize: boltSize,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: AppDimensions.spacingS),
+                  _SubtitleBlock(
+                    textTheme: textTheme,
+                    line1: data.subtitleLine1,
+                    line2: data.subtitleLine2,
+                    accentColor: data.accentColor,
+                  ),
+                ],
+              )
               .animate(key: ValueKey('${data.line1}-${data.line2}'))
               .fadeIn(duration: 350.ms)
               .slideY(begin: 0.08, duration: 350.ms, curve: Curves.easeOut);
@@ -88,10 +85,7 @@ class HomeHeroTitle extends StatelessWidget {
 }
 
 class _PrimaryTitle extends StatelessWidget {
-  const _PrimaryTitle({
-    required this.text,
-    required this.fontSize,
-  });
+  const _PrimaryTitle({required this.text, required this.fontSize});
 
   final String text;
   final double fontSize;
@@ -99,7 +93,7 @@ class _PrimaryTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Transform.rotate(
-      angle: _titleTiltAngle,
+      angle: HomeHeroTitle.titleTiltAngle,
       child: Text(
         text.toUpperCase(),
         textAlign: TextAlign.center,
@@ -112,13 +106,7 @@ class _PrimaryTitle extends StatelessWidget {
           letterSpacing: -1.5,
           color: Colors.white,
           fontWeight: FontWeight.w900,
-          shadows: const [
-            Shadow(color: Color(0xFF202020), offset: Offset(0, 2), blurRadius: 0),
-            Shadow(color: Color(0xFF1A1A1A), offset: Offset(0, 4), blurRadius: 0),
-            Shadow(color: Color(0xE6000000), offset: Offset(0, 12), blurRadius: 8),
-            Shadow(color: Color(0xCC000000), offset: Offset(0, 22), blurRadius: 24),
-            Shadow(color: Color(0x99000000), offset: Offset(0, 32), blurRadius: 36),
-          ],
+          shadows: AppShadows.homeHeroPrimaryTitle,
         ),
       ),
     );
@@ -159,11 +147,11 @@ class _GradientTitleLine extends StatelessWidget {
           secondaryAccentColor: secondaryAccentColor,
         ),
         if (showBolt) ...[
-          const SizedBox(width: 6),
+          const SizedBox(width: AppDimensions.heroTitleGap),
           _BoltIcon(size: boltSize, color: secondaryAccentColor),
-          const SizedBox(width: 6),
+          const SizedBox(width: AppDimensions.heroTitleGap),
         ] else if (right.isNotEmpty) ...[
-          const SizedBox(width: 8),
+          const SizedBox(width: AppDimensions.heroTitleWordGap),
         ],
         if (right.isNotEmpty)
           _OutlinedGradientText(
@@ -208,37 +196,30 @@ class _OutlinedGradientText extends StatelessWidget {
             foreground: Paint()
               ..style = PaintingStyle.stroke
               ..strokeWidth = 3.5
-              ..color = const Color(0xFF161616),
-            shadows: const [
-              Shadow(color: Color(0xFF161616), offset: Offset(0, 3), blurRadius: 0),
-              Shadow(color: Color(0xFF101010), offset: Offset(0, 7), blurRadius: 0),
-              Shadow(
-                color: Color(0xE6000000),
-                offset: Offset(0, 14),
-                blurRadius: 10,
-              ),
-              Shadow(
-                color: Color(0xB3000000),
-                offset: Offset(0, 24),
-                blurRadius: 22,
-              ),
-            ],
+              ..color = AppShadows.homeHeroStroke,
+            shadows: AppShadows.homeHeroOutlineTitle,
           ),
         ),
         Text(
           text,
           style: baseStyle?.copyWith(
             foreground: Paint()
-              ..shader = LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  secondaryAccentColor.withValues(alpha: 0.95),
-                  accentColor.withValues(alpha: 0.95),
-                ],
-              ).createShader(
-                Rect.fromLTWH(0, 0, text.length * fontSize * 0.58, fontSize),
-              ),
+              ..shader =
+                  LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      secondaryAccentColor.withValues(alpha: 0.95),
+                      accentColor.withValues(alpha: 0.95),
+                    ],
+                  ).createShader(
+                    Rect.fromLTWH(
+                      0,
+                      0,
+                      text.length * fontSize * 0.58,
+                      fontSize,
+                    ),
+                  ),
           ),
         ),
       ],
@@ -255,14 +236,14 @@ class _BoltIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Icon(
-      Icons.bolt,
-      size: size,
-      color: color,
-      shadows: [
-        Shadow(color: color.withAlpha(180), blurRadius: 14),
-        const Shadow(color: Color(0xB3000000), offset: Offset(0, 6), blurRadius: 10),
-      ],
-    )
+          Icons.bolt,
+          size: size,
+          color: color,
+          shadows: [
+            Shadow(color: color.withAlpha(180), blurRadius: 14),
+            AppShadows.homeHeroBoltDepth,
+          ],
+        )
         .animate(onPlay: (controller) => controller.repeat())
         .scaleXY(
           begin: 0.95,
@@ -296,7 +277,7 @@ class _SubtitleBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Transform.rotate(
-      angle: _titleTiltAngle,
+      angle: HomeHeroTitle.titleTiltAngle,
       child: Column(
         children: [
           Text(
@@ -307,9 +288,7 @@ class _SubtitleBlock extends StatelessWidget {
               fontWeight: FontWeight.w800,
               fontStyle: FontStyle.italic,
               letterSpacing: 1,
-              shadows: const [
-                Shadow(color: Color(0xCC000000), offset: Offset(0, 4), blurRadius: 10),
-              ],
+              shadows: AppShadows.homeHeroSubtitle,
             ),
           ),
           Text(
@@ -322,7 +301,7 @@ class _SubtitleBlock extends StatelessWidget {
               letterSpacing: 1,
               shadows: [
                 Shadow(color: accentColor.withAlpha(140), blurRadius: 12),
-                const Shadow(color: Color(0xCC000000), offset: Offset(0, 4), blurRadius: 10),
+                ...AppShadows.homeHeroSubtitle,
               ],
             ),
           ),
@@ -331,5 +310,3 @@ class _SubtitleBlock extends StatelessWidget {
     );
   }
 }
-
-const _titleTiltAngle = -0.045;

@@ -5,17 +5,22 @@ import 'package:go_router/go_router.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
 import 'package:tic_tac_bet/core/extensions/betclic_theme_context_extension.dart';
 import 'package:tic_tac_bet/core/theme/app_colors.dart';
-import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
+import 'package:tic_tac_bet/core/theme/app_typography_theme_extension.dart';
 import 'package:tic_tac_bet/features/betting/application/providers/betting_providers.dart';
+import 'package:tic_tac_bet/features/home/presentation/widgets/home_top_bar_icon_button.dart';
 
 class HomeTopBar extends ConsumerWidget {
-  const HomeTopBar({super.key});
+  const HomeTopBar({super.key, this.accentColor});
+
+  final Color? accentColor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final wallet = ref.watch(walletControllerProvider);
     final theme = Theme.of(context);
     final betclic = context.betclic;
+    final tint = accentColor ?? AppColors.neonBlue;
+    final logoStyle = theme.extension<AppTypographyTheme>()!.homeLogoStyle;
 
     return SafeArea(
       bottom: false,
@@ -26,18 +31,36 @@ class HomeTopBar extends ConsumerWidget {
         ),
         child: Row(
           children: [
-            Text(
-              context.l10n.appTitle.toUpperCase(),
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w900,
-                color: theme.colorScheme.onSurface,
-                letterSpacing: 2,
-                shadows: [
-                  Shadow(
-                    color: AppColors.neonBlue.withAlpha(180),
-                    blurRadius: 10,
+            Transform(
+              alignment: Alignment.centerLeft,
+              transform: Matrix4.skewX(-0.08),
+              child: RichText(
+                text: TextSpan(
+                  style: logoStyle.copyWith(
+                    color: AppColors.darkTextPrimary,
+                    shadows: [
+                      Shadow(
+                        color: AppColors.neonBlue.withAlpha(120),
+                        blurRadius: 8,
+                      ),
+                    ],
                   ),
-                ],
+                  children: [
+                    const TextSpan(text: 'TIC.TAC '),
+                    TextSpan(
+                      text: 'BET',
+                      style: TextStyle(
+                        color: AppColors.betclicRed,
+                        shadows: [
+                          Shadow(
+                            color: AppColors.betclicRed.withAlpha(120),
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const Spacer(),
@@ -47,33 +70,34 @@ class HomeTopBar extends ConsumerWidget {
                 vertical: AppDimensions.spacingS,
               ),
               decoration: BoxDecoration(
-                color: theme.colorScheme.onSurface.withAlpha(20),
-                borderRadius: BorderRadius.circular(50),
-                border: Border.all(
-                  color: theme.colorScheme.onSurface.withAlpha(50),
-                ),
+                color: tint.withAlpha(40),
+                borderRadius: BorderRadius.circular(AppDimensions.radiusPill),
+                border: Border.all(color: tint.withAlpha(70)),
               ),
               child: Text(
                 '${wallet.balance}',
-                style: theme.textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
                   color: betclic.coinColor,
+                  shadows: [
+                    Shadow(
+                      color: theme.colorScheme.shadow.withAlpha(120),
+                      blurRadius: 4,
+                    ),
+                  ],
                 ),
               ),
             ),
             const SizedBox(width: AppDimensions.spacingS),
-            IconButton(
-              icon: Icon(
-                Icons.history,
-                color: theme.colorScheme.onSurface.withAlpha(180),
-              ),
+            HomeTopBarIconButton(
+              icon: Icons.history,
+              accentColor: accentColor,
               onPressed: () => context.pushNamed('history'),
             ),
-            IconButton(
-              icon: Icon(
-                Icons.settings,
-                color: theme.colorScheme.onSurface.withAlpha(180),
-              ),
+            const SizedBox(width: AppDimensions.spacingXS),
+            HomeTopBarIconButton(
+              icon: Icons.settings,
+              accentColor: accentColor,
               onPressed: () => context.pushNamed('settings'),
             ),
           ],
