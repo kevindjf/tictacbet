@@ -6,52 +6,100 @@ part of 'settings_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$themeModeSettingHash() => r'd5bf6c05af8ffc45458e9b74fd8ec4ff04176a39';
+String _$settingsBoxHash() => r'd977cdf5ad5ab66c8a074c184a4380ec22048c01';
 
-/// See also [ThemeModeSetting].
-@ProviderFor(ThemeModeSetting)
-final themeModeSettingProvider =
-    NotifierProvider<ThemeModeSetting, ThemeMode>.internal(
-      ThemeModeSetting.new,
-      name: r'themeModeSettingProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$themeModeSettingHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-typedef _$ThemeModeSetting = Notifier<ThemeMode>;
-String _$difficultySettingHash() => r'5fb1c307e450a5f8d5c37e767d11bea8fa582f95';
-
-/// See also [DifficultySetting].
-@ProviderFor(DifficultySetting)
-final difficultySettingProvider =
-    NotifierProvider<DifficultySetting, Difficulty>.internal(
-      DifficultySetting.new,
-      name: r'difficultySettingProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$difficultySettingHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-typedef _$DifficultySetting = Notifier<Difficulty>;
-String _$localeSettingHash() => r'8606a788383e16200d570591c87ee61725bbfd70';
-
-/// See also [LocaleSetting].
-@ProviderFor(LocaleSetting)
-final localeSettingProvider = NotifierProvider<LocaleSetting, Locale?>.internal(
-  LocaleSetting.new,
-  name: r'localeSettingProvider',
+/// Provides the Hive box used for settings persistence.
+///
+/// Copied from [settingsBox].
+@ProviderFor(settingsBox)
+final settingsBoxProvider = Provider<Box<dynamic>>.internal(
+  settingsBox,
+  name: r'settingsBoxProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$localeSettingHash,
+      : _$settingsBoxHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$LocaleSetting = Notifier<Locale?>;
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef SettingsBoxRef = ProviderRef<Box<dynamic>>;
+String _$settingsRepositoryHash() =>
+    r'037493f058802a4d0ae2bae14a1a95efb47f9554';
+
+/// Provides the settings repository abstraction backed by Hive.
+///
+/// Copied from [settingsRepository].
+@ProviderFor(settingsRepository)
+final settingsRepositoryProvider = Provider<SettingsRepository>.internal(
+  settingsRepository,
+  name: r'settingsRepositoryProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$settingsRepositoryHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef SettingsRepositoryRef = ProviderRef<SettingsRepository>;
+String _$themeModeControllerHash() =>
+    r'5799749886f60d3d08e877a6468f9061ef5587db';
+
+/// Controls the persisted theme mode setting.
+///
+/// Copied from [ThemeModeController].
+@ProviderFor(ThemeModeController)
+final themeModeControllerProvider =
+    NotifierProvider<ThemeModeController, ThemeMode>.internal(
+      ThemeModeController.new,
+      name: r'themeModeControllerProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$themeModeControllerHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$ThemeModeController = Notifier<ThemeMode>;
+String _$difficultyControllerHash() =>
+    r'bfcde76a1eb75ef8fcd682547f183d0a59650cc7';
+
+/// Controls the persisted AI difficulty setting.
+///
+/// Copied from [DifficultyController].
+@ProviderFor(DifficultyController)
+final difficultyControllerProvider =
+    NotifierProvider<DifficultyController, Difficulty>.internal(
+      DifficultyController.new,
+      name: r'difficultyControllerProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$difficultyControllerHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$DifficultyController = Notifier<Difficulty>;
+String _$localeControllerHash() => r'6e9654457ea839c830121bd0a85b77f1183d9d5d';
+
+/// Controls the persisted locale override setting.
+///
+/// Copied from [LocaleController].
+@ProviderFor(LocaleController)
+final localeControllerProvider =
+    NotifierProvider<LocaleController, Locale?>.internal(
+      LocaleController.new,
+      name: r'localeControllerProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$localeControllerHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+typedef _$LocaleController = Notifier<Locale?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

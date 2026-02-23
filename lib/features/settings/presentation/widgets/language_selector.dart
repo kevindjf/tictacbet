@@ -4,17 +4,16 @@ import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
 import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 import 'package:tic_tac_bet/features/settings/application/providers/settings_providers.dart';
 
+/// Lets the user choose the application language.
 class LanguageSelector extends ConsumerWidget {
+  /// Creates the language selector widget.
   const LanguageSelector({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final savedLocale = ref.watch(localeSettingProvider);
-    final systemLocale = Localizations.localeOf(context);
-    final current = switch ((savedLocale ?? systemLocale).languageCode) {
-      'fr' => const Locale('fr'),
-      _ => const Locale('en'),
-    };
+    final controller = ref.read(localeControllerProvider.notifier);
+    ref.watch(localeControllerProvider);
+    final current = controller.resolvedLocale(Localizations.localeOf(context));
 
     return Card(
       child: Padding(
@@ -39,10 +38,9 @@ class LanguageSelector extends ConsumerWidget {
                 ),
               ],
               selected: {current},
-              onSelectionChanged: (selected) async {
+              onSelectionChanged: (selected) {
                 final locale = selected.first;
-                ref.read(localeSettingProvider.notifier).setValue(locale);
-                await SettingsStorage.writeLocale(locale);
+                ref.read(localeControllerProvider.notifier).setValue(locale);
               },
             ),
           ],

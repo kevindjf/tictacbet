@@ -6,9 +6,12 @@ import 'package:tic_tac_bet/core/widgets/app_pattern_background.dart';
 import 'package:tic_tac_bet/features/settings/presentation/widgets/difficulty_selector.dart';
 import 'package:tic_tac_bet/features/settings/presentation/widgets/language_selector.dart';
 import 'package:tic_tac_bet/features/settings/presentation/widgets/replay_tutorial_tile.dart';
+import 'package:tic_tac_bet/features/settings/presentation/widgets/settings_rules_tile.dart';
 import 'package:tic_tac_bet/features/settings/presentation/widgets/theme_toggle.dart';
 
+/// Displays application settings and onboarding actions.
 class SettingsPage extends ConsumerWidget {
+  /// Creates the settings page.
   const SettingsPage({super.key});
 
   @override
@@ -24,6 +27,8 @@ class SettingsPage extends ConsumerWidget {
             DifficultySelector(),
             SizedBox(height: AppDimensions.spacingM),
             LanguageSelector(),
+            SizedBox(height: AppDimensions.spacingM),
+            SettingsRulesTile(),
             SizedBox(height: AppDimensions.spacingM),
             ReplayTutorialTile(),
           ],

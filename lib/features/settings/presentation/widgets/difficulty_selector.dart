@@ -5,12 +5,14 @@ import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/difficulty.dart';
 import 'package:tic_tac_bet/features/settings/application/providers/settings_providers.dart';
 
+/// Lets the user choose the AI difficulty.
 class DifficultySelector extends ConsumerWidget {
+  /// Creates the difficulty selector widget.
   const DifficultySelector({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final current = ref.watch(difficultySettingProvider);
+    final current = ref.watch(difficultyControllerProvider);
 
     return Card(
       child: Padding(
@@ -39,10 +41,11 @@ class DifficultySelector extends ConsumerWidget {
                 ),
               ],
               selected: {current},
-              onSelectionChanged: (selected) async {
+              onSelectionChanged: (selected) {
                 final difficulty = selected.first;
-                ref.read(difficultySettingProvider.notifier).setValue(difficulty);
-                await SettingsStorage.writeDifficulty(difficulty);
+                ref
+                    .read(difficultyControllerProvider.notifier)
+                    .setValue(difficulty);
               },
             ),
           ],
