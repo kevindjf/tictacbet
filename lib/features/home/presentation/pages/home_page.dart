@@ -22,9 +22,9 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 const _backgrounds = [
-  'assets/images/background_home_1.png',
-  'assets/images/background_vsia.png',
-  'assets/images/background_home.png',
+  'assets/images/background_ranked.png',
+  'assets/images/background_human_vs_ia.png',
+  'assets/images/background_local_players.png',
 ];
 
 class _HomePageState extends ConsumerState<HomePage>
@@ -103,10 +103,7 @@ class _HomePageState extends ConsumerState<HomePage>
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  scrim.withAlpha(120),
-                  scrim.withAlpha(200),
-                ],
+                colors: [scrim.withAlpha(120), scrim.withAlpha(200)],
               ),
             ),
           ),
@@ -126,7 +123,8 @@ class _HomePageState extends ConsumerState<HomePage>
                         animation: _pageController,
                         builder: (context, _) {
                           final page = _pageController.hasClients
-                              ? (_pageController.page ?? _currentPage.toDouble())
+                              ? (_pageController.page ??
+                                    _currentPage.toDouble())
                               : _currentPage.toDouble();
 
                           return Stack(
