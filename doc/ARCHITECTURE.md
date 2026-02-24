@@ -25,7 +25,7 @@ Un Tic Tac Toe avec mécanique de rétention :
 **Mode Compétition (online, Supabase)** :
 - Matchmaking avec mises (coins virtuels)
 - 1000 coins au départ
-- Streaks : victoires consécutives = multiplicateur croissant (1x -> 1.2x -> 1.5x -> 2x -> 3x)
+- Pas de streak actif dans l'implémentation actuelle (multiplicateur fixe `1.0`)
 - Lobby avec propositions de matchs et mises visibles
 - Résolution server-side (anti-triche)
 
@@ -179,11 +179,11 @@ lib/
 │   │       └── widgets/    # BoardWidget, CellWidget, VictoryLinePainter
 │   ├── betting/
 │   │   ├── domain/
-│   │   │   ├── entities/   # Wallet, Bet, Streak
-│   │   │   ├── use_cases/  # PlaceBet, ResolveBet, CalculateMultiplier
+│   │   │   ├── entities/   # Wallet, Bet
+│   │   │   ├── use_cases/  # PlaceBet, ResolveBet
 │   │   │   └── repositories/ # WalletRepository (interface)
 │   │   ├── data/           # WalletModel, WalletRepositoryImpl
-│   │   ├── application/    # WalletNotifier, BetProviders, StreakProviders
+│   │   ├── application/    # WalletNotifier, BetProviders
 │   │   └── presentation/   # BetPlacementPage, CoinBalance, BetSlider
 │   ├── history/
 │   │   ├── domain/         # GameHistoryEntry, GetHistory, GetStatistics
@@ -243,7 +243,7 @@ Résumé des invariants d'architecture :
 
 **Wallet** : balance + frozenAmount -> **stocké côté Supabase** (anti-triche). En local, pas de wallet.
 
-**Streak** : count + multiplier calculé (0->1x, 1->1.2x, 2->1.5x, 3->2x, 5+->3x) -> **online only**
+**Streak** : retiré de l'implémentation actuelle (mécanique prévue initialement mais non conservée)
 
 **Minimax AI** : alpha-beta pruning. Hard = parfait. Medium = 70% optimal. Easy = depth 2 + 50% random.
 
@@ -253,9 +253,9 @@ Résumé des invariants d'architecture :
 
 1. Joueur A **propose un match** dans le lobby avec une mise (min 10, max = balance)
 2. Joueur B **accepte** -> doit avoir au moins le même montant. Les 2 wallets débités via RPC Postgres transactionnelle
-3. **Win** : gagnant récupère `pot (2xmise) x streak.multiplier`
-4. **Draw** : chacun récupère sa mise, streaks reset
-5. **Loss** : mise perdue, streak reset
+3. **Win** : gagnant récupère `pot (2xmise)` (multiplicateur fixe `1.0`)
+4. **Draw** : chacun récupère sa mise
+5. **Loss** : mise perdue
 6. **Bankrupt** (balance = 0) : bailout 500 coins (1 fois), puis 200
 
 ### Mode entraînement (local, gratuit)

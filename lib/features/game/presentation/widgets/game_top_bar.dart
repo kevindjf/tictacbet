@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
 import 'package:tic_tac_bet/core/extensions/betclic_theme_context_extension.dart';
+import 'package:tic_tac_bet/core/extensions/game_mode_ui_extension.dart';
 import 'package:tic_tac_bet/core/theme/app_colors.dart';
 import 'package:tic_tac_bet/core/theme/app_typography_theme_extension.dart';
 import 'package:tic_tac_bet/features/betting/application/providers/betting_providers.dart';
@@ -15,18 +16,12 @@ class GameTopBar extends ConsumerWidget {
 
   final GameMode mode;
 
-  static Color accentForMode(GameMode mode) => switch (mode) {
-    GameModeOnline() => AppColors.neonRed,
-    GameModeVsAi() => AppColors.neonBlue,
-    GameModeVsLocal() => AppColors.neonGold,
-  };
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final wallet = ref.watch(walletControllerProvider);
     final theme = Theme.of(context);
     final betclic = context.betclic;
-    final tint = accentForMode(mode);
+    final tint = mode.accentColor;
     final logoStyle = theme.extension<AppTypographyTheme>()!.homeLogoStyle;
 
     return SafeArea(

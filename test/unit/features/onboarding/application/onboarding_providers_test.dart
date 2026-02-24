@@ -68,7 +68,6 @@ void main() {
 
         await controller.next();
         await controller.next();
-        await controller.next();
         expect(
           container.read(onboardingControllerProvider),
           OnboardingStep.simulation,

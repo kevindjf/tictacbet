@@ -88,14 +88,18 @@ class GameHistoryEntryModel extends HiveObject {
     );
   }
 
-  static GameHistoryEntryModel fromDomain(GameHistoryEntry entry) {
-    String modeType;
-    int? difficultyIndex;
+}
 
-    switch (entry.mode) {
+/// Converts a domain [GameHistoryEntry] to its Hive storage model.
+extension GameHistoryEntryToModel on GameHistoryEntry {
+  GameHistoryEntryModel toModel() {
+    String modeType;
+    int? difficultyIdx;
+
+    switch (mode) {
       case GameModeVsAi(:final difficulty):
         modeType = 'vsAi';
-        difficultyIndex = difficulty.index;
+        difficultyIdx = difficulty.index;
       case GameModeVsLocal():
         modeType = 'vsLocal';
       case GameModeOnline():
@@ -103,17 +107,17 @@ class GameHistoryEntryModel extends HiveObject {
     }
 
     return GameHistoryEntryModel(
-      id: entry.id,
-      playedAt: entry.playedAt,
+      id: id,
+      playedAt: playedAt,
       modeType: modeType,
-      outcomeIndex: entry.outcome.index,
-      playerSideIndex: entry.playerSide.index,
-      moveRows: entry.moves.map((m) => m.row).toList(),
-      moveCols: entry.moves.map((m) => m.col).toList(),
-      movePlayers: entry.moves.map((m) => m.player.index).toList(),
-      difficultyIndex: difficultyIndex,
-      betAmount: entry.betAmount,
-      coinsWon: entry.coinsWon,
+      outcomeIndex: outcome.index,
+      playerSideIndex: playerSide.index,
+      moveRows: moves.map((m) => m.row).toList(),
+      moveCols: moves.map((m) => m.col).toList(),
+      movePlayers: moves.map((m) => m.player.index).toList(),
+      difficultyIndex: difficultyIdx,
+      betAmount: betAmount,
+      coinsWon: coinsWon,
     );
   }
 }

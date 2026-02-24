@@ -69,7 +69,7 @@ class HistoryTile extends StatelessWidget {
               )
             : null,
         trailing: Text(
-          formatLocalizedShortDate(context, entry.playedAt),
+          entry.playedAt.formatLocalized(context),
           style: Theme.of(context).textTheme.bodySmall,
         ),
         contentPadding: const EdgeInsets.symmetric(

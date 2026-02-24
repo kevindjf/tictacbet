@@ -18,7 +18,7 @@ class HistoryRepositoryImpl implements HistoryRepository {
 
   @override
   Future<void> addEntry(GameHistoryEntry entry) async {
-    await _datasource.add(GameHistoryEntryModel.fromDomain(entry));
+    await _datasource.add(entry.toModel());
   }
 
   @override
