@@ -6,23 +6,6 @@ part of 'history_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$historyDatasourceHash() => r'6ce6a77f40f66779a6754a729a57e6e519d7f76c';
-
-/// See also [historyDatasource].
-@ProviderFor(historyDatasource)
-final historyDatasourceProvider = Provider<HistoryLocalDatasource>.internal(
-  historyDatasource,
-  name: r'historyDatasourceProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$historyDatasourceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef HistoryDatasourceRef = ProviderRef<HistoryLocalDatasource>;
 String _$historyRepositoryHash() => r'b7d58b1fa5a774a8bcce79b755a138eb5fb9e2b1';
 
 /// See also [historyRepository].

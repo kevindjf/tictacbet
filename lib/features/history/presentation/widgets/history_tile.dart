@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
 import 'package:tic_tac_bet/core/extensions/betclic_theme_context_extension.dart';
+import 'package:tic_tac_bet/core/utils/date_formatter.dart';
 import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/game_mode.dart';
 import 'package:tic_tac_bet/features/history/domain/entities/game_history_entry.dart';
@@ -14,6 +14,21 @@ class HistoryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final betclic = context.betclic;
+    final coinsSubtitle = switch (entry.outcome) {
+      GameOutcome.win when entry.coinsWon != null => (
+        context.l10n.coinsWon(entry.coinsWon!),
+        betclic.coinColor,
+      ),
+      GameOutcome.loss when entry.betAmount != null => (
+        context.l10n.coinsLost(entry.betAmount!),
+        betclic.playerOColor,
+      ),
+      GameOutcome.draw when entry.betAmount != null => (
+        context.l10n.coinsWon(entry.betAmount!),
+        betclic.coinColor,
+      ),
+      _ => null,
+    };
 
     final (icon, color, label) = switch (entry.outcome) {
       GameOutcome.win => (
@@ -45,20 +60,16 @@ class HistoryTile extends StatelessWidget {
       child: ListTile(
         leading: Icon(icon, color: color),
         title: Text('$label ${context.l10n.versus} $opponent'),
-        subtitle: entry.coinsWon != null
+        subtitle: coinsSubtitle != null
             ? Text(
-                entry.outcome == GameOutcome.win
-                    ? context.l10n.coinsWon(entry.coinsWon!)
-                    : context.l10n.coinsLost(entry.betAmount ?? 0),
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: entry.outcome == GameOutcome.win
-                      ? betclic.coinColor
-                      : betclic.playerOColor,
-                ),
+                coinsSubtitle.$1,
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: coinsSubtitle.$2),
               )
             : null,
         trailing: Text(
-          _formatDate(context, entry.playedAt),
+          formatLocalizedShortDate(context, entry.playedAt),
           style: Theme.of(context).textTheme.bodySmall,
         ),
         contentPadding: const EdgeInsets.symmetric(
@@ -67,10 +78,5 @@ class HistoryTile extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _formatDate(BuildContext context, DateTime date) {
-    final locale = Localizations.localeOf(context).toLanguageTag();
-    return DateFormat.yMd(locale).format(date);
   }
 }

@@ -9,8 +9,13 @@ class HistoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [for (final entry in entries) HistoryTile(entry: entry)],
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: entries.length,
+      itemBuilder: (context, index) {
+        return HistoryTile(entry: entries[index]);
+      },
     );
   }
 }

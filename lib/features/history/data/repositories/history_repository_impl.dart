@@ -24,42 +24,7 @@ class HistoryRepositoryImpl implements HistoryRepository {
   @override
   Future<GameStatistics> getStatistics({bool onlineOnly = false}) async {
     final entries = await getHistory(onlineOnly: onlineOnly);
-    if (entries.isEmpty) return const GameStatistics();
-
-    var wins = 0;
-    var losses = 0;
-    var draws = 0;
-    var totalCoinsWon = 0;
-    var totalCoinsLost = 0;
-    var bestStreak = 0;
-    var currentStreak = 0;
-
-    for (final entry in entries.reversed) {
-      switch (entry.outcome) {
-        case GameOutcome.win:
-          wins++;
-          currentStreak++;
-          if (currentStreak > bestStreak) bestStreak = currentStreak;
-          if (entry.coinsWon != null) totalCoinsWon += entry.coinsWon!;
-        case GameOutcome.loss:
-          losses++;
-          currentStreak = 0;
-          if (entry.betAmount != null) totalCoinsLost += entry.betAmount!;
-        case GameOutcome.draw:
-          draws++;
-          currentStreak = 0;
-      }
-    }
-
-    return GameStatistics(
-      totalGames: entries.length,
-      wins: wins,
-      losses: losses,
-      draws: draws,
-      totalCoinsWon: totalCoinsWon,
-      totalCoinsLost: totalCoinsLost,
-      bestStreak: bestStreak,
-    );
+    return GameStatistics.fromEntries(entries);
   }
 
   @override

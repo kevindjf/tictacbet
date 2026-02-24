@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart' show Ref;
+import 'package:flutter_riverpod/flutter_riverpod.dart' show Provider, Ref;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tic_tac_bet/features/history/data/datasources/history_local_datasource.dart';
 import 'package:tic_tac_bet/features/history/data/repositories/history_repository_impl.dart';
@@ -8,14 +8,13 @@ import 'package:tic_tac_bet/features/history/domain/repositories/history_reposit
 
 part 'history_providers.g.dart';
 
-@Riverpod(keepAlive: true)
-HistoryLocalDatasource historyDatasource(Ref ref) {
+final _historyDatasourceProvider = Provider<HistoryLocalDatasource>((ref) {
   return HistoryLocalDatasource();
-}
+});
 
 @Riverpod(keepAlive: true)
 HistoryRepository historyRepository(Ref ref) {
-  return HistoryRepositoryImpl(ref.read(historyDatasourceProvider));
+  return HistoryRepositoryImpl(ref.read(_historyDatasourceProvider));
 }
 
 @riverpod

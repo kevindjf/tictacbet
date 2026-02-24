@@ -4,8 +4,14 @@ import 'package:tic_tac_bet/features/history/data/models/game_history_entry_mode
 class HistoryLocalDatasource {
   static const String boxName = 'game_history';
 
-  Box<GameHistoryEntryModel> get _box =>
-      Hive.box<GameHistoryEntryModel>(boxName);
+  Box<GameHistoryEntryModel> get _box {
+    if (!Hive.isBoxOpen(boxName)) {
+      throw StateError(
+        'Hive box "$boxName" is not open. Initialize and open it before using HistoryLocalDatasource.',
+      );
+    }
+    return Hive.box<GameHistoryEntryModel>(boxName);
+  }
 
   Future<List<GameHistoryEntryModel>> getAll() async {
     return _box.values.toList()
