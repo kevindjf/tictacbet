@@ -27,7 +27,6 @@ Le but du repo est double :
 
 - Wallet local (coins)
 - Mise avant partie
-- Streak / multiplicateurs
 - Résolution des gains/pertes
 - Historique des parties + statistiques
 
@@ -101,9 +100,7 @@ Le repo contient plusieurs documents utiles :
 - `doc/ARCHITECTURE.md` : vision globale, architecture, plan d’implémentation
 - `doc/CONVENTIONS.md` : conventions de code/UI (Riverpod generator, naming, theming, i18n, etc.)
 - `doc/RULES.md` : règles non négociables + checklist qualité
-- `doc/ROLE_DES_CLASSES.md` : rôle des classes (explication orientée junior)
 - `doc/EPIC_MATCHMAKING_SUPABASE.md` : epic + stories pour la suite online Supabase
-- `PROGRESS.md` : historique de progression / état d’avancement
 
 ## Prérequis
 
