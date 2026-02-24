@@ -8,44 +8,25 @@ import 'package:tic_tac_bet/features/betting/application/providers/betting_provi
 import 'package:tic_tac_bet/features/betting/domain/entities/wallet.dart';
 import 'package:tic_tac_bet/features/betting/presentation/widgets/bet_slider.dart';
 import 'package:tic_tac_bet/features/betting/presentation/widgets/coin_balance.dart';
-import 'package:tic_tac_bet/features/betting/presentation/widgets/streak_display.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/game_mode.dart';
 import 'package:tic_tac_bet/features/matchmaking/application/providers/matchmaking_providers.dart';
 
-class BetPlacementPage extends ConsumerStatefulWidget {
-  const BetPlacementPage({
-    super.key,
-    this.forMatchmaking = false,
-  });
+class BetPlacementPage extends ConsumerWidget {
+  const BetPlacementPage({super.key, this.forMatchmaking = false});
 
   final bool forMatchmaking;
 
-  @override
-  ConsumerState<BetPlacementPage> createState() => _BetPlacementPageState();
-}
-
-class _BetPlacementPageState extends ConsumerState<BetPlacementPage> {
-  int _betAmount = Wallet.minimumBet;
-
-  int _clampBetAmount(int maxAvailable) {
-    if (maxAvailable < Wallet.minimumBet) return Wallet.minimumBet;
-    return _betAmount.clamp(Wallet.minimumBet, maxAvailable);
-  }
+  int _minimumBet() => forMatchmaking ? 1 : Wallet.minimumBet;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final minimumBet = _minimumBet();
     final wallet = ref.watch(walletControllerProvider);
-    final streak = ref.watch(streakControllerProvider);
-    final canPlaceBet = wallet.availableBalance >= Wallet.minimumBet;
-    final clampedBetAmount = _clampBetAmount(wallet.availableBalance);
-
-    if (_betAmount != clampedBetAmount) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          setState(() => _betAmount = clampedBetAmount);
-        }
-      });
-    }
+    final rawBetAmount = ref.watch(betPlacementAmountProvider(forMatchmaking));
+    final canPlaceBet = wallet.availableBalance >= minimumBet;
+    final clampedBetAmount = wallet.availableBalance < minimumBet
+        ? minimumBet
+        : rawBetAmount.clamp(minimumBet, wallet.availableBalance);
 
     return Scaffold(
       appBar: AppBar(title: Text(context.l10n.placeBet)),
@@ -53,62 +34,99 @@ class _BetPlacementPageState extends ConsumerState<BetPlacementPage> {
         child: AppPatternBackground(
           child: Padding(
             padding: const EdgeInsets.all(AppDimensions.spacingM),
-            child: Column(
-              children: [
-                CoinBalance(balance: wallet.balance),
-                const SizedBox(height: AppDimensions.spacingL),
-                StreakDisplay(streak: streak),
-                const Spacer(),
-                BetSlider(
-                  currentBet: clampedBetAmount,
-                  maxBet: wallet.availableBalance,
-                  multiplier: streak.multiplier,
-                  onChanged: (value) {
-                    setState(() => _betAmount = value);
-                  },
-                ),
-                const Spacer(),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: canPlaceBet && wallet.canBet(clampedBetAmount)
-                        ? () async {
-                            final bet = await ref
-                                .read(bettingServiceProvider)
-                                .place(clampedBetAmount);
-                            if (bet != null && context.mounted) {
-                              ref.read(currentBetProvider.notifier).setBet(bet);
-                              if (widget.forMatchmaking) {
-                                await ref
-                                    .read(matchmakingRepositoryProvider)
-                                    .createProposal(clampedBetAmount);
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        context.l10n.waitingForOpponent,
-                                      ),
-                                    ),
-                                  );
-                                  context.goNamed('lobby');
-                                }
-                              } else {
-                                context.pushNamed(
-                                  'game',
-                                  extra: const GameMode.online(),
-                                );
-                              }
-                            }
-                          }
-                        : null,
-                    child: Text(context.l10n.betAmount(clampedBetAmount)),
-                  ),
-                ),
-              ],
+            child: _BetPlacementBody(
+              wallet: wallet,
+              minimumBet: minimumBet,
+              canPlaceBet: canPlaceBet,
+              clampedBetAmount: clampedBetAmount,
+              forMatchmaking: forMatchmaking,
             ),
           ),
         ),
       ),
     );
   }
+}
+
+class _BetPlacementBody extends ConsumerWidget {
+  const _BetPlacementBody({
+    required this.wallet,
+    required this.minimumBet,
+    required this.canPlaceBet,
+    required this.clampedBetAmount,
+    required this.forMatchmaking,
+  });
+
+  final Wallet wallet;
+  final int minimumBet;
+  final bool canPlaceBet;
+  final int clampedBetAmount;
+  final bool forMatchmaking;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
+      children: [
+        CoinBalance(balance: wallet.balance),
+        const Spacer(),
+        BetSlider(
+          currentBet: clampedBetAmount,
+          maxBet: wallet.availableBalance,
+          minimumBet: minimumBet,
+          multiplier: 1.0,
+          onChanged: (value) =>
+              ref
+                      .read(betPlacementAmountProvider(forMatchmaking).notifier)
+                      .state =
+                  value,
+        ),
+        const Spacer(),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed:
+                canPlaceBet && clampedBetAmount <= wallet.availableBalance
+                ? () => _submitBetAndMaybeNavigate(
+                    ref,
+                    context,
+                    forMatchmaking: forMatchmaking,
+                    betAmount: clampedBetAmount,
+                    minimumBet: minimumBet,
+                  )
+                : null,
+            child: Text(context.l10n.betAmount(clampedBetAmount)),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+Future<void> _submitBetAndMaybeNavigate(
+  WidgetRef ref,
+  BuildContext context, {
+  required bool forMatchmaking,
+  required int betAmount,
+  required int minimumBet,
+}) async {
+  final bet = await ref
+      .read(bettingServiceProvider)
+      .place(betAmount, minimumBet: minimumBet);
+
+  if (bet == null || !context.mounted) return;
+
+  ref.read(currentBetProvider.notifier).setBet(bet);
+
+  if (forMatchmaking) {
+    await ref.read(matchmakingRepositoryProvider).createProposal(betAmount);
+    if (!context.mounted) return;
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(context.l10n.waitingForOpponent)));
+    context.goNamed('lobby');
+    return;
+  }
+
+  context.pushNamed('game', extra: const GameMode.online());
 }

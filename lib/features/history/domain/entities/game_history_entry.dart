@@ -1,7 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:tic_tac_bet/core/entities/game_outcome.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/game_mode.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/move.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/player.dart';
+
+export 'package:tic_tac_bet/core/entities/game_outcome.dart';
 
 part 'game_history_entry.freezed.dart';
 
@@ -18,5 +21,3 @@ sealed class GameHistoryEntry with _$GameHistoryEntry {
     int? coinsWon,
   }) = _GameHistoryEntry;
 }
-
-enum GameOutcome { win, loss, draw }

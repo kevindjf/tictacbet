@@ -7,7 +7,6 @@ class BetclicTheme extends ThemeExtension<BetclicTheme> {
     required this.playerOColor,
     required this.coinColor,
     required this.coinColorDark,
-    required this.streakColor,
     required this.boardBorderColor,
     required this.cellColor,
     required this.cellHighlightColor,
@@ -24,7 +23,6 @@ class BetclicTheme extends ThemeExtension<BetclicTheme> {
   final Color playerOColor;
   final Color coinColor;
   final Color coinColorDark;
-  final Color streakColor;
   final Color boardBorderColor;
   final Color cellColor;
   final Color cellHighlightColor;
@@ -51,7 +49,6 @@ class BetclicTheme extends ThemeExtension<BetclicTheme> {
     playerOColor: AppColors.playerO,
     coinColor: AppColors.gold,
     coinColorDark: AppColors.goldDark,
-    streakColor: AppColors.gold,
     boardBorderColor: AppColors.darkBorder,
     cellColor: AppColors.darkCard,
     cellHighlightColor: AppColors.darkSurface,
@@ -69,7 +66,6 @@ class BetclicTheme extends ThemeExtension<BetclicTheme> {
     playerOColor: AppColors.playerO,
     coinColor: AppColors.gold,
     coinColorDark: AppColors.goldDark,
-    streakColor: AppColors.gold,
     boardBorderColor: AppColors.lightBorder,
     cellColor: AppColors.lightCard,
     cellHighlightColor: Color(0xFFF3F4F6),
@@ -88,7 +84,6 @@ class BetclicTheme extends ThemeExtension<BetclicTheme> {
     Color? playerOColor,
     Color? coinColor,
     Color? coinColorDark,
-    Color? streakColor,
     Color? boardBorderColor,
     Color? cellColor,
     Color? cellHighlightColor,
@@ -105,7 +100,6 @@ class BetclicTheme extends ThemeExtension<BetclicTheme> {
       playerOColor: playerOColor ?? this.playerOColor,
       coinColor: coinColor ?? this.coinColor,
       coinColorDark: coinColorDark ?? this.coinColorDark,
-      streakColor: streakColor ?? this.streakColor,
       boardBorderColor: boardBorderColor ?? this.boardBorderColor,
       cellColor: cellColor ?? this.cellColor,
       cellHighlightColor: cellHighlightColor ?? this.cellHighlightColor,
@@ -128,7 +122,6 @@ class BetclicTheme extends ThemeExtension<BetclicTheme> {
       playerOColor: Color.lerp(playerOColor, other.playerOColor, t)!,
       coinColor: Color.lerp(coinColor, other.coinColor, t)!,
       coinColorDark: Color.lerp(coinColorDark, other.coinColorDark, t)!,
-      streakColor: Color.lerp(streakColor, other.streakColor, t)!,
       boardBorderColor: Color.lerp(
         boardBorderColor,
         other.boardBorderColor,

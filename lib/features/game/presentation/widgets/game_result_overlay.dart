@@ -6,6 +6,7 @@ import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/game_mode.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/game_result.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/player.dart';
+import 'package:tic_tac_bet/features/game/presentation/widgets/game_coin_result_section.dart';
 
 class GameResultOverlay extends StatelessWidget {
   const GameResultOverlay({
@@ -14,6 +15,8 @@ class GameResultOverlay extends StatelessWidget {
     required this.mode,
     required this.onPlayAgain,
     required this.onBackToHome,
+    this.coinsDelta,
+    this.isResolvingBet = false,
   });
 
   final GameResult result;
@@ -21,16 +24,26 @@ class GameResultOverlay extends StatelessWidget {
   final VoidCallback onPlayAgain;
   final VoidCallback onBackToHome;
 
+  /// Net coin change for the player in online mode. `null` means no bet was
+  /// involved or the result is a draw (no display).
+  final int? coinsDelta;
+
+  /// Whether the bet resolution is still in progress.
+  final bool isResolvingBet;
+
   @override
   Widget build(BuildContext context) {
     final betclic = context.betclic;
+    final scaffoldBg = Theme.of(context).scaffoldBackgroundColor;
 
     final (title, color, icon) = switch (result) {
       GameResultWin(:final winner)
-          when mode is GameModeVsAi && winner == Player.x =>
+          when (mode is GameModeVsAi || mode is GameModeOnline) &&
+              winner == Player.x =>
         (context.l10n.youWin, betclic.playerXColor, Icons.emoji_events),
       GameResultWin(:final winner)
-          when mode is GameModeVsAi && winner == Player.o =>
+          when (mode is GameModeVsAi || mode is GameModeOnline) &&
+              winner == Player.o =>
         (
           context.l10n.youLose,
           betclic.playerOColor,
@@ -54,41 +67,81 @@ class GameResultOverlay extends StatelessWidget {
       GameResultOngoing() => ('', Colors.transparent, Icons.error),
     };
 
+    final showCoinSection =
+        mode is GameModeOnline && (isResolvingBet || coinsDelta != null);
+
     return Container(
-      color: Theme.of(context).scaffoldBackgroundColor.withAlpha(230),
-      child: Center(
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(AppDimensions.spacingXL),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(icon, size: 64, color: color).animate().scale(
-                  begin: const Offset(0, 0),
-                  duration: 400.ms,
-                  curve: Curves.elasticOut,
-                ),
-                const SizedBox(height: AppDimensions.spacingM),
-                Text(
-                  title,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.headlineMedium?.copyWith(color: color),
-                ),
-                const SizedBox(height: AppDimensions.spacingXL),
-                ElevatedButton(
-                  onPressed: onPlayAgain,
-                  child: Text(context.l10n.playAgain),
-                ),
-                const SizedBox(height: AppDimensions.spacingS),
-                TextButton(
-                  onPressed: onBackToHome,
-                  child: Text(context.l10n.backToHome),
-                ),
-              ],
-            ),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: const [0.0, 0.45],
+          colors: [Colors.transparent, scaffoldBg.withAlpha(245)],
+        ),
+      ),
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppDimensions.spacingXL,
+            0,
+            AppDimensions.spacingXL,
+            AppDimensions.spacingXL,
           ),
-        ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.2),
+          child: SizedBox(
+            width: double.infinity,
+            child:
+                Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppDimensions.spacingXL),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(icon, size: 56, color: color).animate().scale(
+                              begin: const Offset(0, 0),
+                              duration: 400.ms,
+                              curve: Curves.elasticOut,
+                            ),
+                            const SizedBox(height: AppDimensions.spacingM),
+                            Text(
+                              title,
+                              style: Theme.of(context).textTheme.headlineMedium
+                                  ?.copyWith(color: color),
+                            ),
+                            if (showCoinSection) ...[
+                              const SizedBox(height: AppDimensions.spacingM),
+                              GameCoinResultSection(
+                                coinsDelta: coinsDelta ?? 0,
+                                isLoading: isResolvingBet,
+                              ),
+                            ],
+                            const SizedBox(height: AppDimensions.spacingXL),
+                            if (mode is! GameModeOnline) ...[
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: onPlayAgain,
+                                  child: Text(context.l10n.playAgain),
+                                ),
+                              ),
+                              const SizedBox(height: AppDimensions.spacingS),
+                            ],
+                            SizedBox(
+                              width: double.infinity,
+                              child: TextButton(
+                                onPressed: onBackToHome,
+                                child: Text(context.l10n.backToHome),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                    .animate()
+                    .slideY(begin: 0.4, duration: 350.ms, curve: Curves.easeOut)
+                    .fadeIn(duration: 250.ms),
+          ),
+        ),
       ),
     );
   }

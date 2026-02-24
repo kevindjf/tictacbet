@@ -48,6 +48,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get opponentTurn => 'Opponent\'s turn';
 
   @override
+  String opponentTurnNamed(String name) {
+    return '$name\'s turn';
+  }
+
+  @override
   String get playerXTurn => 'Player X\'s turn';
 
   @override
@@ -88,16 +93,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get balance => 'Balance';
 
   @override
-  String get streak => 'Streak';
-
-  @override
   String multiplier(String value) {
     return 'x$value';
-  }
-
-  @override
-  String streakCount(int count) {
-    return '$count wins';
   }
 
   @override
@@ -239,9 +236,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get onboardingGame => 'Take turns placing your marks to win!';
 
   @override
-  String get onboardingStreaks => 'Chain victories to multiply your gains!';
-
-  @override
   String get skip => 'Skip';
 
   @override
@@ -267,6 +261,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get restart => 'Restart';
+
+  @override
+  String get abandon => 'Abandon';
+
+  @override
+  String get abandonMatchTitle => 'Abandon the match?';
+
+  @override
+  String get abandonMatchMessage =>
+      'You will forfeit the match and lose your bet.';
 
   @override
   String get won => 'Won';
@@ -356,7 +360,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cashBattleDesc => 'Bet your coins against real opponents.';
 
   @override
-  String get cashBattlePlay => 'Play (1.00€)';
+  String get cashBattlePlay => 'Participate';
 
   @override
   String get liveJackpot => 'Live Jackpot';

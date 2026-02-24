@@ -13,6 +13,12 @@
   "difficulty": "Difficulté",
   "yourTurn": "À toi de jouer !",
   "opponentTurn": "Tour de l'adversaire",
+  "opponentTurnNamed": "Tour {name}",
+  "@opponentTurnNamed": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "playerXTurn": "Tour du joueur X",
   "playerOTurn": "Tour du joueur O",
   "youWin": "Victoire !",
@@ -35,17 +41,10 @@
     }
   },
   "balance": "Solde",
-  "streak": "Série",
   "multiplier": "x{value}",
   "@multiplier": {
     "placeholders": {
       "value": { "type": "String" }
-    }
-  },
-  "streakCount": "{count} victoires",
-  "@streakCount": {
-    "placeholders": {
-      "count": { "type": "int" }
     }
   },
   "placeBet": "Miser",
@@ -97,7 +96,6 @@
   "welcomeTitle": "Bienvenue sur Tic Tac Bet !",
   "onboardingBoard": "Voici le plateau. Touche une case pour jouer.",
   "onboardingGame": "Joue à tour de rôle pour aligner 3 symboles !",
-  "onboardingStreaks": "Enchaîne les victoires pour multiplier tes gains !",
   "skip": "Passer",
   "next": "Suivant",
   "getStarted": "C'est parti",
@@ -106,6 +104,9 @@
   "selectDifficulty": "Choisis la difficulté",
   "startGame": "Lancer la partie",
   "quit": "Quitter",
+  "abandon": "Abandonner",
+  "abandonMatchTitle": "Abandonner la partie ?",
+  "abandonMatchMessage": "Tu vas déclarer forfait et perdre ta mise.",
   "restart": "Recommencer",
   "won": "Gagné",
   "lost": "Perdu",
@@ -157,7 +158,7 @@
   "cashBattle": "CASH\nBATTLE",
   "cashBattleTagline": "All In",
   "cashBattleDesc": "Mise tes coins contre de vrais adversaires.",
-  "cashBattlePlay": "Jouer (1.00€)",
+  "cashBattlePlay": "Participer",
   "liveJackpot": "Live Jackpot",
   "cyberBot": "CYBER\nBOT",
   "cyberBotTagline": "Solo Training",

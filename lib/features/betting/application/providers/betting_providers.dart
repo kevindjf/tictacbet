@@ -1,16 +1,23 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart' show Ref;
+import 'package:flutter_riverpod/flutter_riverpod.dart' show Ref, StateProvider;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tic_tac_bet/core/entities/game_outcome.dart';
 import 'package:tic_tac_bet/features/betting/data/datasources/wallet_local_datasource.dart';
 import 'package:tic_tac_bet/features/betting/data/repositories/wallet_repository_impl.dart';
 import 'package:tic_tac_bet/features/betting/domain/entities/bet.dart';
-import 'package:tic_tac_bet/features/betting/domain/entities/streak.dart';
+import 'package:tic_tac_bet/features/betting/domain/entities/bet_resolution.dart';
 import 'package:tic_tac_bet/features/betting/domain/entities/wallet.dart';
 import 'package:tic_tac_bet/features/betting/domain/repositories/wallet_repository.dart';
 import 'package:tic_tac_bet/features/betting/domain/use_cases/place_bet.dart';
 import 'package:tic_tac_bet/features/betting/domain/use_cases/resolve_bet.dart';
-import 'package:tic_tac_bet/features/history/domain/entities/game_history_entry.dart';
 
 part 'betting_providers.g.dart';
+
+final betPlacementAmountProvider = StateProvider.autoDispose.family<int, bool>((
+  ref,
+  forMatchmaking,
+) {
+  return forMatchmaking ? 1 : Wallet.minimumBet;
+});
 
 @Riverpod(keepAlive: true)
 WalletLocalDatasource walletDatasource(Ref ref) {
@@ -53,12 +60,14 @@ class WalletController extends _$WalletController {
   }
 
   Future<void> addWinnings(int amount) async {
-    final newBalance = state.balance + amount;
-    await _repository.updateBalance(newBalance);
-    state = state.copyWith(balance: newBalance);
+    await _credit(amount);
   }
 
   Future<void> refundBet(int amount) async {
+    await _credit(amount);
+  }
+
+  Future<void> _credit(int amount) async {
     final newBalance = state.balance + amount;
     await _repository.updateBalance(newBalance);
     state = state.copyWith(balance: newBalance);
@@ -67,26 +76,6 @@ class WalletController extends _$WalletController {
   Future<void> bailout() async {
     await _repository.applyBailout();
     state = await _repository.getWallet();
-  }
-}
-
-@Riverpod(keepAlive: true)
-class StreakController extends _$StreakController {
-  WalletRepository get _repository => ref.read(walletRepositoryProvider);
-
-  @override
-  Streak build() {
-    Future.microtask(load);
-    return const Streak();
-  }
-
-  Future<void> load() async {
-    state = await _repository.getStreak();
-  }
-
-  Future<void> update(Streak streak) async {
-    state = streak;
-    await _repository.updateStreak(streak);
   }
 }
 
@@ -107,10 +96,9 @@ class BettingService {
   PlaceBetUseCase get _placeBet => _ref.read(placeBetUseCaseProvider);
   ResolveBetUseCase get _resolveBet => _ref.read(resolveBetUseCaseProvider);
 
-  Future<Bet?> place(int amount) async {
+  Future<Bet?> place(int amount, {int minimumBet = Wallet.minimumBet}) async {
     final wallet = _ref.read(walletControllerProvider);
-    final streak = _ref.read(streakControllerProvider);
-    final result = _placeBet(wallet, amount, streak);
+    final result = _placeBet(wallet, amount, minimumBet: minimumBet);
     return result.when(
       success: (bet) async {
         await _ref.read(walletControllerProvider.notifier).deductBet(amount);
@@ -121,18 +109,13 @@ class BettingService {
   }
 
   Future<BetResolution?> resolve(Bet bet, GameOutcome outcome) async {
-    final streak = _ref.read(streakControllerProvider);
-    final resolution = _resolveBet(bet, outcome, streak.count);
+    final resolution = _resolveBet(bet, outcome);
 
     if (resolution.balanceChange > 0) {
       await _ref
           .read(walletControllerProvider.notifier)
           .addWinnings(resolution.balanceChange);
     }
-
-    await _ref
-        .read(streakControllerProvider.notifier)
-        .update(Streak(count: resolution.newStreakCount));
 
     if (_ref.read(walletControllerProvider).isBankrupt) {
       await _ref.read(walletControllerProvider.notifier).bailout();

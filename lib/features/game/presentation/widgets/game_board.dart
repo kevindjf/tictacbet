@@ -40,7 +40,9 @@ class GameBoard extends StatelessWidget {
       child: Stack(
         children: [
           GridView.builder(
+            primary: false,
             physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               crossAxisSpacing: AppDimensions.cellSpacing,

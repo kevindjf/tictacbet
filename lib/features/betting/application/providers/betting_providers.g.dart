@@ -107,22 +107,6 @@ final walletControllerProvider =
     );
 
 typedef _$WalletController = Notifier<Wallet>;
-String _$streakControllerHash() => r'69101b3592e389c1d63536ac610519754c149d19';
-
-/// See also [StreakController].
-@ProviderFor(StreakController)
-final streakControllerProvider =
-    NotifierProvider<StreakController, Streak>.internal(
-      StreakController.new,
-      name: r'streakControllerProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$streakControllerHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
-
-typedef _$StreakController = Notifier<Streak>;
 String _$currentBetHash() => r'e457773bd207c431d8292cf8f4ed56832d2ccdee';
 
 /// See also [CurrentBet].

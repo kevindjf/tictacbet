@@ -10,7 +10,8 @@ class MockMatchmakingRepository implements MatchmakingRepository {
     _emit();
   }
 
-  static final MockMatchmakingRepository instance = MockMatchmakingRepository._();
+  static final MockMatchmakingRepository instance =
+      MockMatchmakingRepository._();
 
   final _controller = StreamController<List<MatchProposal>>.broadcast(
     onListen: () {
@@ -20,6 +21,7 @@ class MockMatchmakingRepository implements MatchmakingRepository {
   final List<MatchProposal> _proposals = [];
   bool _seeded = false;
   int _sequence = 0;
+  int _mockCursor = 0;
 
   static const localUserId = 'local-user';
   static const localUserName = 'You';
@@ -104,43 +106,55 @@ class MockMatchmakingRepository implements MatchmakingRepository {
   Future<void> cancelProposal(String proposalId) async {
     final index = _proposals.indexWhere((p) => p.id == proposalId);
     if (index == -1) return;
-    _proposals[index] = _proposals[index].copyWith(status: MatchStatus.cancelled);
+    _proposals[index] = _proposals[index].copyWith(
+      status: MatchStatus.cancelled,
+    );
     _emit();
   }
+
+  static const _mockPlayers = [
+    ('u_1', 'Alex', 50),
+    ('u_2', 'Sam', 100),
+    ('u_3', 'Nina', 250),
+    ('u_4', 'Marco', 75),
+    ('u_5', 'Léa', 150),
+  ];
+  static const _minAvailableLobbyMatches = 3;
 
   void _seedIfNeeded() {
     if (_seeded) return;
     _seeded = true;
+    _topUpAvailableMockProposals();
+  }
+
+  void _topUpAvailableMockProposals() {
+    final availableCount = _proposals.where(
+      (p) => p.isWaiting && p.creatorId != localUserId,
+    ).length;
+    final missing = _minAvailableLobbyMatches - availableCount;
+    if (missing <= 0) return;
+
+    for (var i = 0; i < missing; i++) {
+      _addOneMockProposal();
+    }
+  }
+
+  /// Adds one fresh mock proposal from simulated players.
+  void _addOneMockProposal() {
     final now = DateTime.now();
-    _proposals.addAll([
+    final (id, name, amount) = _mockPlayers[_mockCursor % _mockPlayers.length];
+    _mockCursor += 1;
+    _proposals.add(
       MatchProposal(
         id: _nextId('proposal'),
-        creatorId: 'u_1',
-        creatorName: 'Alex',
-        betAmount: 50,
+        creatorId: id,
+        creatorName: name,
+        betAmount: amount,
         status: MatchStatus.waiting,
-        createdAt: now.subtract(const Duration(minutes: 1)),
-        expiresAt: now.add(const Duration(minutes: 4)),
+        createdAt: now,
+        expiresAt: now.add(const Duration(hours: 1)),
       ),
-      MatchProposal(
-        id: _nextId('proposal'),
-        creatorId: 'u_2',
-        creatorName: 'Sam',
-        betAmount: 100,
-        status: MatchStatus.waiting,
-        createdAt: now.subtract(const Duration(minutes: 2)),
-        expiresAt: now.add(const Duration(minutes: 3)),
-      ),
-      MatchProposal(
-        id: _nextId('proposal'),
-        creatorId: 'u_3',
-        creatorName: 'Nina',
-        betAmount: 250,
-        status: MatchStatus.waiting,
-        createdAt: now.subtract(const Duration(seconds: 30)),
-        expiresAt: now.add(const Duration(minutes: 5)),
-      ),
-    ]);
+    );
   }
 
   void _emit() {
@@ -156,6 +170,10 @@ class MockMatchmakingRepository implements MatchmakingRepository {
     _proposals
       ..clear()
       ..addAll(normalized);
+
+    // Keep the lobby populated for the demo: always top up available matches.
+    _topUpAvailableMockProposals();
+
     _controller.add(List.unmodifiable(_proposals));
   }
 

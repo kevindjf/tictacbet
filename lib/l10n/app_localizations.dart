@@ -176,6 +176,12 @@ abstract class AppLocalizations {
   /// **'Opponent\'s turn'**
   String get opponentTurn;
 
+  /// No description provided for @opponentTurnNamed.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}\'s turn'**
+  String opponentTurnNamed(String name);
+
   /// No description provided for @playerXTurn.
   ///
   /// In en, this message translates to:
@@ -248,23 +254,11 @@ abstract class AppLocalizations {
   /// **'Balance'**
   String get balance;
 
-  /// No description provided for @streak.
-  ///
-  /// In en, this message translates to:
-  /// **'Streak'**
-  String get streak;
-
   /// No description provided for @multiplier.
   ///
   /// In en, this message translates to:
   /// **'x{value}'**
   String multiplier(String value);
-
-  /// No description provided for @streakCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} wins'**
-  String streakCount(int count);
 
   /// No description provided for @placeBet.
   ///
@@ -530,12 +524,6 @@ abstract class AppLocalizations {
   /// **'Take turns placing your marks to win!'**
   String get onboardingGame;
 
-  /// No description provided for @onboardingStreaks.
-  ///
-  /// In en, this message translates to:
-  /// **'Chain victories to multiply your gains!'**
-  String get onboardingStreaks;
-
   /// No description provided for @skip.
   ///
   /// In en, this message translates to:
@@ -589,6 +577,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restart'**
   String get restart;
+
+  /// No description provided for @abandon.
+  ///
+  /// In en, this message translates to:
+  /// **'Abandon'**
+  String get abandon;
+
+  /// No description provided for @abandonMatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Abandon the match?'**
+  String get abandonMatchTitle;
+
+  /// No description provided for @abandonMatchMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You will forfeit the match and lose your bet.'**
+  String get abandonMatchMessage;
 
   /// No description provided for @won.
   ///
@@ -743,7 +749,7 @@ abstract class AppLocalizations {
   /// No description provided for @cashBattlePlay.
   ///
   /// In en, this message translates to:
-  /// **'Play (1.00€)'**
+  /// **'Participate'**
   String get cashBattlePlay;
 
   /// No description provided for @liveJackpot.

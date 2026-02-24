@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tic_tac_bet/core/constants/app_durations.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
-import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 import 'package:tic_tac_bet/core/widgets/app_pattern_background.dart';
 import 'package:tic_tac_bet/features/betting/application/providers/betting_providers.dart';
-import 'package:tic_tac_bet/features/betting/domain/use_cases/resolve_bet.dart';
 import 'package:tic_tac_bet/features/game/application/providers/game_providers.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/game_mode.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/game_result.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/game_state.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/player.dart';
-import 'package:tic_tac_bet/features/history/application/providers/history_providers.dart';
-import 'package:tic_tac_bet/features/history/domain/entities/game_history_entry.dart';
 import 'package:tic_tac_bet/features/game/presentation/widgets/game_action_bar.dart';
 import 'package:tic_tac_bet/features/game/presentation/widgets/game_board.dart';
 import 'package:tic_tac_bet/features/game/presentation/widgets/game_result_overlay.dart';
 import 'package:tic_tac_bet/features/game/presentation/widgets/game_status_bar.dart';
+import 'package:tic_tac_bet/features/game/presentation/widgets/game_top_bar.dart';
+import 'package:tic_tac_bet/features/history/application/providers/history_providers.dart';
+import 'package:tic_tac_bet/features/history/domain/entities/game_history_entry.dart';
+import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 
 class GamePage extends ConsumerStatefulWidget {
   const GamePage({super.key, required this.mode});
@@ -28,113 +29,230 @@ class GamePage extends ConsumerStatefulWidget {
 }
 
 class _GamePageState extends ConsumerState<GamePage> {
-  bool _gameResultHandled = false;
+  static const _mockOnlineOpponentNames = [
+    'Alex',
+    'Nina',
+    'Sam',
+    'Léo',
+    'Maya',
+    'Yanis',
+  ];
+  static String? _mockOnlineOpponentNameCache;
+
+  int? _coinsDelta;
+  bool _isResolvingBet = false;
+  bool _showResultOverlay = false;
+  int _overlaySequence = 0;
+  String? _onlineOpponentName;
 
   @override
   void initState() {
     super.initState();
+    if (widget.mode is GameModeOnline) {
+      _onlineOpponentName = _ensureMockOnlineOpponentName();
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(gameControllerProvider.notifier).startGame(widget.mode);
     });
+  }
+
+  String _ensureMockOnlineOpponentName() {
+    final cached = _mockOnlineOpponentNameCache;
+    if (cached != null) return cached;
+
+    final index = DateTime.now().millisecond % _mockOnlineOpponentNames.length;
+    final generated = _mockOnlineOpponentNames[index];
+    _mockOnlineOpponentNameCache = generated;
+    return generated;
   }
 
   @override
   Widget build(BuildContext context) {
     final gameState = ref.watch(gameControllerProvider);
 
-    if (gameState.isGameOver && !_gameResultHandled) {
-      _gameResultHandled = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _handleGameFinished(gameState);
-      });
-    } else if (!gameState.isGameOver && _gameResultHandled) {
-      _gameResultHandled = false;
-    }
+    ref.listen(gameControllerProvider, (prev, next) {
+      if (prev?.isGameOver == false && next.isGameOver) {
+        _scheduleResultOverlay(next.result);
+        _handleGameFinished(next);
+      }
+    });
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(context.l10n.appTitle),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            _clearPendingOnlineBetIfNeeded();
-            context.pop();
-          },
-        ),
-      ),
-      body: SafeArea(
-        child: AppPatternBackground(
-          child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppDimensions.spacingM),
-              child: Column(
-                children: [
-                  GameStatusBar(
-                    currentPlayer: gameState.currentPlayer,
-                    isAiThinking: gameState.isAiThinking,
-                    mode: gameState.mode,
+    return PopScope<void>(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _handleSystemBackIntent();
+      },
+      child: Scaffold(
+        body: AppPatternBackground(
+          child: Column(
+            children: [
+              GameTopBar(mode: gameState.mode),
+              Expanded(
+                child: SafeArea(
+                  top: false,
+                  child: Stack(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(
+                          AppDimensions.spacingM,
+                          AppDimensions.spacingS,
+                          AppDimensions.spacingM,
+                          AppDimensions.spacingM,
+                        ),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: AppDimensions.spacingS),
+                            GameStatusBar(
+                              currentPlayer: gameState.currentPlayer,
+                              isAiThinking: gameState.isAiThinking,
+                              mode: gameState.mode,
+                              onlineOpponentName: _onlineOpponentName,
+                            ),
+                            const SizedBox(height: AppDimensions.spacingM),
+                            Expanded(
+                              child: Center(
+                                child: FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: GameBoard(
+                                    board: gameState.board,
+                                    result: gameState.result,
+                                    onCellTap: (row, col) => ref
+                                        .read(gameControllerProvider.notifier)
+                                        .playMove(row, col),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: AppDimensions.spacingM),
+                            GameActionBar(
+                              mode: gameState.mode,
+                              onRestart: _resetGame,
+                              onQuit: _handleBack,
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (gameState.isGameOver && _showResultOverlay)
+                        GameResultOverlay(
+                          result: gameState.result,
+                          mode: gameState.mode,
+                          coinsDelta: _coinsDelta,
+                          isResolvingBet: _isResolvingBet,
+                          onPlayAgain: _resetGame,
+                          onBackToHome: () => context.go('/'),
+                        ),
+                    ],
                   ),
-                  const Spacer(),
-                  GameBoard(
-                    board: gameState.board,
-                    result: gameState.result,
-                    onCellTap: (row, col) {
-                      ref
-                          .read(gameControllerProvider.notifier)
-                          .playMove(row, col);
-                    },
-                  ),
-                  const Spacer(),
-                  GameActionBar(
-                    onRestart: () {
-                      _clearPendingOnlineBetIfNeeded();
-                      ref.read(gameControllerProvider.notifier).reset();
-                    },
-                    onQuit: () {
-                      _clearPendingOnlineBetIfNeeded();
-                      context.pop();
-                    },
-                  ),
-                ],
+                ),
               ),
-            ),
-            if (gameState.isGameOver)
-              GameResultOverlay(
-                result: gameState.result,
-                mode: gameState.mode,
-                onPlayAgain: () {
-                  _clearPendingOnlineBetIfNeeded();
-                  ref.read(gameControllerProvider.notifier).reset();
-                },
-                onBackToHome: () => context.go('/'),
-              ),
-          ],
+            ],
           ),
         ),
       ),
     );
   }
 
+  Future<void> _handleSystemBackIntent() async {
+    final state = ref.read(gameControllerProvider);
+    final isRankedOngoing = state.mode is GameModeOnline && !state.isGameOver;
+    if (!isRankedOngoing) {
+      _handleBack();
+      return;
+    }
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(dialogContext.l10n.abandonMatchTitle),
+          content: Text(dialogContext.l10n.abandonMatchMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(dialogContext.l10n.cancelMatch),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: Text(dialogContext.l10n.abandon),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirm == true && mounted) {
+      _handleBack();
+    }
+  }
+
+  void _handleBack() {
+    _clearPendingOnlineBetIfNeeded();
+    context.pop();
+  }
+
+  void _resetGame() {
+    setState(() {
+      _coinsDelta = null;
+      _isResolvingBet = false;
+      _showResultOverlay = false;
+    });
+    ref.read(gameControllerProvider.notifier).reset();
+  }
+
+  void _scheduleResultOverlay(GameResult result) {
+    final sequence = ++_overlaySequence;
+    setState(() => _showResultOverlay = false);
+
+    final delay = result is GameResultWin
+        ? AppDurations.victoryLine + AppDurations.instant
+        : Duration.zero;
+
+    if (delay == Duration.zero) {
+      if (mounted && sequence == _overlaySequence) {
+        setState(() => _showResultOverlay = true);
+      }
+      return;
+    }
+
+    Future<void>.delayed(delay, () {
+      if (!mounted || sequence != _overlaySequence) return;
+      setState(() => _showResultOverlay = true);
+    });
+  }
+
   Future<void> _handleGameFinished(GameState gameState) async {
     if (!mounted) return;
 
     final currentBet = ref.read(currentBetProvider);
-    BetResolution? resolution;
     int? coinsWon;
     int? betAmount;
 
     if (gameState.mode is GameModeOnline && currentBet != null) {
+      setState(() => _isResolvingBet = true);
+
       final outcome = _onlineOutcomeFromResult(gameState.result);
-      resolution = await ref.read(bettingServiceProvider).resolve(
-        currentBet,
-        outcome,
-      );
+      final resolution = await ref
+          .read(bettingServiceProvider)
+          .resolve(currentBet, outcome);
       betAmount = currentBet.amount;
-      if (outcome == GameOutcome.win) {
-        coinsWon = resolution?.balanceChange ?? 0;
-      }
+
+      final coinsDelta = switch (outcome) {
+        GameOutcome.win => resolution?.balanceChange ?? 0,
+        GameOutcome.loss => -currentBet.amount,
+        GameOutcome.draw => null,
+      };
+
+      if (outcome == GameOutcome.win) coinsWon = resolution?.balanceChange;
+
       ref.read(currentBetProvider.notifier).clear();
+
+      if (mounted) {
+        setState(() {
+          _isResolvingBet = false;
+          _coinsDelta = coinsDelta;
+        });
+      }
     }
 
     final entry = GameHistoryEntry(
@@ -160,11 +278,8 @@ class _GamePageState extends ConsumerState<GamePage> {
   GameOutcome _historyOutcomeFromGameResult(GameResult result, GameMode mode) {
     return switch (result) {
       GameResultDraw() => GameOutcome.draw,
-      GameResultWin(:final winner) when mode is GameModeVsAi =>
+      GameResultWin(:final winner) =>
         winner == Player.x ? GameOutcome.win : GameOutcome.loss,
-      GameResultWin(:final winner) => winner == Player.x
-          ? GameOutcome.win
-          : GameOutcome.loss,
       GameResultOngoing() => GameOutcome.draw,
     };
   }
@@ -172,9 +287,8 @@ class _GamePageState extends ConsumerState<GamePage> {
   GameOutcome _onlineOutcomeFromResult(GameResult result) {
     return switch (result) {
       GameResultDraw() => GameOutcome.draw,
-      GameResultWin(:final winner) => winner == Player.x
-          ? GameOutcome.win
-          : GameOutcome.loss,
+      GameResultWin(:final winner) =>
+        winner == Player.x ? GameOutcome.win : GameOutcome.loss,
       GameResultOngoing() => GameOutcome.draw,
     };
   }

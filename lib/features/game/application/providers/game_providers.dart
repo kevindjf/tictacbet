@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart' show Ref;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tic_tac_bet/core/constants/app_durations.dart';
+import 'package:tic_tac_bet/features/game/domain/entities/difficulty.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/game_mode.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/game_state.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/move.dart';
@@ -32,6 +34,10 @@ AiMoveUseCase aiMoveUseCase(Ref ref) {
 class GameController extends _$GameController {
   Timer? _aiTimer;
 
+  /// Difficulty randomly assigned when an online game starts, simulating the
+  /// remote opponent with an AI of unknown strength.
+  Difficulty? _onlineAiDifficulty;
+
   CheckWinnerUseCase get _checkWinner => ref.read(checkWinnerUseCaseProvider);
   MakeMoveUseCase get _makeMove => ref.read(makeMoveUseCaseProvider);
   AiMoveUseCase get _aiMove => ref.read(aiMoveUseCaseProvider);
@@ -46,6 +52,10 @@ class GameController extends _$GameController {
 
   void startGame(GameMode mode) {
     _aiTimer?.cancel();
+    if (mode is GameModeOnline) {
+      final difficulties = Difficulty.values;
+      _onlineAiDifficulty = difficulties[Random().nextInt(difficulties.length)];
+    }
     state = GameState.initial(mode);
   }
 
@@ -75,8 +85,16 @@ class GameController extends _$GameController {
 
   void _maybePlayAi() {
     final mode = state.mode;
-    if (mode is! GameModeVsAi) return;
     if (state.currentPlayer != Player.o) return;
+
+    final Difficulty difficulty;
+    if (mode is GameModeVsAi) {
+      difficulty = mode.difficulty;
+    } else if (mode is GameModeOnline && _onlineAiDifficulty != null) {
+      difficulty = _onlineAiDifficulty!;
+    } else {
+      return;
+    }
 
     state = state.copyWith(isAiThinking: true);
 
@@ -84,7 +102,7 @@ class GameController extends _$GameController {
     _aiTimer = Timer(AppDurations.aiDelay, () {
       if (state.isGameOver) return;
 
-      final aiMoveResult = _aiMove(state.board, Player.o, mode.difficulty);
+      final aiMoveResult = _aiMove(state.board, Player.o, difficulty);
       final newBoard = state.board.applyMove(aiMoveResult);
       final gameResult = _checkWinner(newBoard);
 

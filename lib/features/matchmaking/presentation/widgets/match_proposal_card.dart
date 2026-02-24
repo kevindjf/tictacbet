@@ -48,7 +48,10 @@ class MatchProposalCard extends StatelessWidget {
                     context.l10n.betAmount(proposal.betAmount),
                     style: Theme.of(
                       context,
-                    ).textTheme.bodySmall?.copyWith(color: betclic.coinColor),
+                    ).textTheme.bodySmall?.copyWith(
+                      color: betclic.coinColor,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ],
               ),

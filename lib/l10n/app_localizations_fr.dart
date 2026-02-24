@@ -48,6 +48,11 @@ class AppLocalizationsFr extends AppLocalizations {
   String get opponentTurn => 'Tour de l\'adversaire';
 
   @override
+  String opponentTurnNamed(String name) {
+    return 'Tour $name';
+  }
+
+  @override
   String get playerXTurn => 'Tour du joueur X';
 
   @override
@@ -88,16 +93,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get balance => 'Solde';
 
   @override
-  String get streak => 'Série';
-
-  @override
   String multiplier(String value) {
     return 'x$value';
-  }
-
-  @override
-  String streakCount(int count) {
-    return '$count victoires';
   }
 
   @override
@@ -240,10 +237,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get onboardingGame => 'Joue à tour de rôle pour aligner 3 symboles !';
 
   @override
-  String get onboardingStreaks =>
-      'Enchaîne les victoires pour multiplier tes gains !';
-
-  @override
   String get skip => 'Passer';
 
   @override
@@ -269,6 +262,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get restart => 'Recommencer';
+
+  @override
+  String get abandon => 'Abandonner';
+
+  @override
+  String get abandonMatchTitle => 'Abandonner la partie ?';
+
+  @override
+  String get abandonMatchMessage =>
+      'Tu vas déclarer forfait et perdre ta mise.';
 
   @override
   String get won => 'Gagné';
@@ -359,7 +362,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get cashBattleDesc => 'Mise tes coins contre de vrais adversaires.';
 
   @override
-  String get cashBattlePlay => 'Jouer (1.00€)';
+  String get cashBattlePlay => 'Participer';
 
   @override
   String get liveJackpot => 'Live Jackpot';
