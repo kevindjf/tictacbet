@@ -6,8 +6,7 @@ void main() {
     test('next returns the following step in order', () {
       expect(OnboardingStep.welcome.next, OnboardingStep.board);
       expect(OnboardingStep.board.next, OnboardingStep.game);
-      expect(OnboardingStep.game.next, OnboardingStep.streaks);
-      expect(OnboardingStep.streaks.next, OnboardingStep.simulation);
+      expect(OnboardingStep.game.next, OnboardingStep.simulation);
       expect(OnboardingStep.simulation.next, isNull);
     });
 
@@ -15,8 +14,7 @@ void main() {
       expect(OnboardingStep.welcome.previous, isNull);
       expect(OnboardingStep.board.previous, OnboardingStep.welcome);
       expect(OnboardingStep.game.previous, OnboardingStep.board);
-      expect(OnboardingStep.streaks.previous, OnboardingStep.game);
-      expect(OnboardingStep.simulation.previous, OnboardingStep.streaks);
+      expect(OnboardingStep.simulation.previous, OnboardingStep.game);
     });
 
     test('isFirst and isLast flags are correct', () {

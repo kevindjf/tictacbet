@@ -33,12 +33,6 @@ class OnboardingStepView extends StatelessWidget {
         '',
         betclic.playerOColor,
       ),
-      OnboardingStep.streaks => (
-        Icons.local_fire_department,
-        context.l10n.onboardingStreaks,
-        '',
-        betclic.streakColor,
-      ),
       // simulation step is rendered separately in OnboardingPage
       OnboardingStep.simulation => (
         Icons.play_arrow,

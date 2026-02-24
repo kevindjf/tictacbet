@@ -5,7 +5,6 @@ enum OnboardingStep {
   welcome,
   board,
   game,
-  streaks,
   simulation;
 
   bool get isFirst => this == welcome;

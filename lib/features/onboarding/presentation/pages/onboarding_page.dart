@@ -107,7 +107,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                       );
                     },
                     child: Text(
-                      currentStep == OnboardingStep.streaks
+                      currentStep == OnboardingStep.game
                           ? context.l10n.getStarted
                           : context.l10n.next,
                     ),
