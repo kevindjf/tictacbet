@@ -49,28 +49,9 @@ void main() {
       expect(result, isA<Failure<Bet>>());
     });
 
-    test(
-      'returns success for create match minimum when custom minimum is 1',
-      () {
-        final result = sut(wallet, 1, minimumBet: 1);
-
-        expect(result, isA<Success<Bet>>());
-        expect((result as Success<Bet>).data.amount, 1);
-      },
-    );
-
-    test(
-      'returns failure below create match minimum when custom minimum is 1',
-      () {
-        final result = sut(wallet, 0, minimumBet: 1);
-
-        expect(result, isA<Failure<Bet>>());
-      },
-    );
-
     test('returns success when amount equals available balance', () {
       final constrainedWallet = const Wallet(balance: 1000, frozenAmount: 600);
-      final result = sut(constrainedWallet, 400, minimumBet: 1);
+      final result = sut(constrainedWallet, 400);
 
       expect(result, isA<Success<Bet>>());
       expect((result as Success<Bet>).data.amount, 400);
@@ -78,7 +59,7 @@ void main() {
 
     test('returns failure when amount exceeds available balance', () {
       final constrainedWallet = const Wallet(balance: 1000, frozenAmount: 600);
-      final result = sut(constrainedWallet, 401, minimumBet: 1);
+      final result = sut(constrainedWallet, 401);
 
       expect(result, isA<Failure<Bet>>());
     });

@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
+import 'package:tic_tac_bet/core/router/app_router.dart';
 import 'package:tic_tac_bet/core/theme/app_colors.dart';
 import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 import 'package:tic_tac_bet/core/widgets/app_pattern_background.dart';
 import 'package:tic_tac_bet/features/betting/application/providers/betting_providers.dart';
+import 'package:tic_tac_bet/features/betting/domain/entities/wallet.dart';
 import 'package:tic_tac_bet/features/betting/presentation/widgets/bet_slider.dart';
 import 'package:tic_tac_bet/features/betting/presentation/widgets/coin_balance.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/game_mode.dart';
 import 'package:tic_tac_bet/features/matchmaking/application/providers/matchmaking_providers.dart';
-import 'package:tic_tac_bet/features/matchmaking/data/repositories/mock_matchmaking_repository.dart';
 import 'package:tic_tac_bet/features/matchmaking/domain/entities/match_proposal.dart';
 import 'package:tic_tac_bet/features/matchmaking/presentation/widgets/match_proposal_card.dart';
 
@@ -19,47 +20,28 @@ class LobbyPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final proposalsAsync = ref.watch(lobbyProposalsProvider);
+    final vmAsync = ref.watch(lobbyViewModelProvider);
     final wallet = ref.watch(walletControllerProvider);
-    final hasWaitingProposal = proposalsAsync.maybeWhen(
-      data: (proposals) => proposals.any(
-        (p) =>
-            p.creatorId == MockMatchmakingRepository.localUserId && p.isWaiting,
-      ),
-      orElse: () => false,
-    );
 
     return Scaffold(
       appBar: AppBar(title: Text(context.l10n.lobby)),
-      floatingActionButton: hasWaitingProposal
-          ? null
-          : FloatingActionButton.extended(
-              onPressed: () => _showCreateMatchSheet(context),
-              backgroundColor: AppColors.neonGold,
-              foregroundColor: AppColors.accessibleDark,
-              icon: const Icon(Icons.add),
-              label: Text(context.l10n.createMatch),
-            ),
+      floatingActionButton: vmAsync.maybeWhen(
+        data: (vm) => vm.hasWaitingProposal
+            ? null
+            : FloatingActionButton.extended(
+                onPressed: () => _showCreateMatchSheet(context),
+                backgroundColor: AppColors.neonGold,
+                foregroundColor: AppColors.accessibleDark,
+                icon: const Icon(Icons.add),
+                label: Text(context.l10n.createMatch),
+              ),
+        orElse: () => null,
+      ),
       body: AppPatternBackground(
-        child: proposalsAsync.when(
-          data: (proposals) {
-            final myWaitingCandidates = proposals
-                .where(
-                  (p) =>
-                      p.creatorId == MockMatchmakingRepository.localUserId &&
-                      p.isWaiting,
-                )
-                .toList();
-            final myWaitingProposal = myWaitingCandidates.isEmpty
-                ? null
-                : myWaitingCandidates.first;
-
-            final available = proposals
-                .where((p) => p.isWaiting)
-                .where(
-                  (p) => p.creatorId != MockMatchmakingRepository.localUserId,
-                )
-                .toList();
+        child: vmAsync.when(
+          data: (vm) {
+            final myWaitingProposal = vm.myWaitingProposal;
+            final available = vm.availableProposals;
 
             return ListView(
               padding: const EdgeInsets.all(AppDimensions.spacingM),
@@ -94,7 +76,7 @@ class LobbyPage extends ConsumerWidget {
                           SnackBar(content: Text(context.l10n.matchAccepted)),
                         );
                         context.pushNamed(
-                          'game',
+                          AppRouter.game,
                           extra: const GameMode.online(),
                         );
                       }
@@ -110,7 +92,7 @@ class LobbyPage extends ConsumerWidget {
                         children: [
                           Icon(
                             Icons.groups_2_outlined,
-                            size: 32,
+                            size: AppDimensions.iconL,
                             color: Theme.of(
                               context,
                             ).colorScheme.onSurfaceVariant,
@@ -164,7 +146,7 @@ class LobbyPage extends ConsumerWidget {
                           if (context.mounted) {
                             _showAcceptedMessage(context);
                             context.pushNamed(
-                              'game',
+                              AppRouter.game,
                               extra: const GameMode.online(),
                             );
                           }
@@ -172,7 +154,7 @@ class LobbyPage extends ConsumerWidget {
                       ),
                     ),
                   ),
-                const SizedBox(height: 88),
+                const SizedBox(height: AppDimensions.fabClearance),
               ],
             );
           },
@@ -199,37 +181,12 @@ class LobbyPage extends ConsumerWidget {
   }
 }
 
-class _CreateMatchBottomSheet extends ConsumerStatefulWidget {
+class _CreateMatchBottomSheet extends ConsumerWidget {
   const _CreateMatchBottomSheet();
 
   @override
-  ConsumerState<_CreateMatchBottomSheet> createState() =>
-      _CreateMatchBottomSheetState();
-}
-
-class _CreateMatchBottomSheetState
-    extends ConsumerState<_CreateMatchBottomSheet> {
-  static const int _minimumBet = 1;
-  int _betAmount = _minimumBet;
-
-  int _clampBetAmount(int maxAvailable) {
-    if (maxAvailable < _minimumBet) return _minimumBet;
-    return _betAmount.clamp(_minimumBet, maxAvailable);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final wallet = ref.watch(walletControllerProvider);
-    final canPlaceBet = wallet.availableBalance >= _minimumBet;
-    final clampedBetAmount = _clampBetAmount(wallet.availableBalance);
-
-    if (_betAmount != clampedBetAmount) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          setState(() => _betAmount = clampedBetAmount);
-        }
-      });
-    }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final vm = ref.watch(betPlacementViewModelProvider(true));
 
     return SafeArea(
       child: Padding(
@@ -255,37 +212,41 @@ class _CreateMatchBottomSheetState
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  context.l10n.minimumBet(1),
+                  context.l10n.minimumBet(Wallet.minimumBet),
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),
               const SizedBox(height: AppDimensions.spacingM),
-              CoinBalance(balance: wallet.balance),
+              CoinBalance(balance: vm.wallet.balance),
               const SizedBox(height: AppDimensions.spacingM),
               BetSlider(
-                currentBet: clampedBetAmount,
-                maxBet: wallet.availableBalance,
-                minimumBet: _minimumBet,
-                onChanged: (value) => setState(() => _betAmount = value),
+                currentBet: vm.clampedAmount,
+                maxBet: vm.wallet.availableBalance,
+                minimumBet: Wallet.minimumBet,
+                potentialWinnings: vm.potentialWinnings,
+                enabled: vm.canPlace,
+                onChanged: (value) =>
+                    ref
+                        .read(betPlacementAmountProvider(true).notifier)
+                        .state = value,
               ),
               const SizedBox(height: AppDimensions.spacingM),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed:
-                      canPlaceBet && clampedBetAmount <= wallet.availableBalance
+                  onPressed: vm.canPlace
                       ? () async {
                           final bet = await ref
                               .read(bettingServiceProvider)
-                              .place(clampedBetAmount, minimumBet: _minimumBet);
+                              .place(vm.clampedAmount);
                           if (bet == null || !context.mounted) return;
 
                           ref.read(currentBetProvider.notifier).setBet(bet);
                           await ref
                               .read(matchmakingRepositoryProvider)
-                              .createProposal(clampedBetAmount);
+                              .createProposal(vm.clampedAmount);
                           if (!context.mounted) return;
 
                           Navigator.of(context).pop();
@@ -296,7 +257,7 @@ class _CreateMatchBottomSheetState
                           );
                         }
                       : null,
-                  child: Text(context.l10n.betAmount(clampedBetAmount)),
+                  child: Text(context.l10n.betAmount(vm.clampedAmount)),
                 ),
               ),
             ],

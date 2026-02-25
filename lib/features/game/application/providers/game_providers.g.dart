@@ -59,7 +59,7 @@ final aiMoveUseCaseProvider = AutoDisposeProvider<AiMoveUseCase>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef AiMoveUseCaseRef = AutoDisposeProviderRef<AiMoveUseCase>;
-String _$gameControllerHash() => r'2d0766e9a5426d3e6263ef82c7b403bc51798390';
+String _$gameControllerHash() => r'762176de7c16b24f709a3fb8efd5162a48cb3a20';
 
 /// See also [GameController].
 @ProviderFor(GameController)

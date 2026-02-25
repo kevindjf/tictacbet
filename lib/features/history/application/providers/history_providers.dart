@@ -5,6 +5,9 @@ import 'package:tic_tac_bet/features/history/data/repositories/history_repositor
 import 'package:tic_tac_bet/features/history/domain/entities/game_history_entry.dart';
 import 'package:tic_tac_bet/features/history/domain/entities/game_statistics.dart';
 import 'package:tic_tac_bet/features/history/domain/repositories/history_repository.dart';
+import 'package:tic_tac_bet/features/history/domain/use_cases/get_history.dart';
+import 'package:tic_tac_bet/features/history/domain/use_cases/get_statistics.dart';
+import 'package:tic_tac_bet/features/history/domain/use_cases/save_game_result.dart';
 
 part 'history_providers.g.dart';
 
@@ -17,20 +20,27 @@ HistoryRepository historyRepository(Ref ref) {
   return HistoryRepositoryImpl(ref.read(_historyDatasourceProvider));
 }
 
+@Riverpod(keepAlive: true)
+GetHistoryUseCase getHistoryUseCase(Ref ref) {
+  return GetHistoryUseCase(ref.read(historyRepositoryProvider));
+}
+
+@Riverpod(keepAlive: true)
+GetStatisticsUseCase getStatisticsUseCase(Ref ref) {
+  return GetStatisticsUseCase(ref.read(historyRepositoryProvider));
+}
+
+@Riverpod(keepAlive: true)
+SaveGameResultUseCase saveGameResultUseCase(Ref ref) {
+  return SaveGameResultUseCase(ref.read(historyRepositoryProvider));
+}
+
 @riverpod
 Future<List<GameHistoryEntry>> history(Ref ref) async {
-  final repository = ref.read(historyRepositoryProvider);
-  return repository.getHistory();
+  return ref.read(getHistoryUseCaseProvider)();
 }
 
 @riverpod
-Future<GameStatistics> statistics(Ref ref) async {
-  final repository = ref.read(historyRepositoryProvider);
-  return repository.getStatistics();
-}
-
-@riverpod
-Future<GameStatistics> onlineStatistics(Ref ref) async {
-  final repository = ref.read(historyRepositoryProvider);
-  return repository.getStatistics(onlineOnly: true);
+Future<GameStatistics> statistics(Ref ref, {required bool onlineOnly}) async {
+  return ref.read(getStatisticsUseCaseProvider)(onlineOnly: onlineOnly);
 }

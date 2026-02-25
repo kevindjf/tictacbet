@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tic_tac_bet/core/router/app_router.dart';
 import 'package:tic_tac_bet/core/constants/app_durations.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
 import 'package:tic_tac_bet/core/widgets/app_pattern_background.dart';
@@ -15,8 +16,8 @@ import 'package:tic_tac_bet/features/game/presentation/widgets/game_board.dart';
 import 'package:tic_tac_bet/features/game/presentation/widgets/game_result_overlay.dart';
 import 'package:tic_tac_bet/features/game/presentation/widgets/game_status_bar.dart';
 import 'package:tic_tac_bet/features/game/presentation/widgets/game_top_bar.dart';
+import 'package:tic_tac_bet/core/entities/game_outcome.dart';
 import 'package:tic_tac_bet/features/history/application/providers/history_providers.dart';
-import 'package:tic_tac_bet/features/history/domain/entities/game_history_entry.dart';
 import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 
 class GamePage extends ConsumerStatefulWidget {
@@ -29,41 +30,17 @@ class GamePage extends ConsumerStatefulWidget {
 }
 
 class _GamePageState extends ConsumerState<GamePage> {
-  static const _mockOnlineOpponentNames = [
-    'Alex',
-    'Nina',
-    'Sam',
-    'Léo',
-    'Maya',
-    'Yanis',
-  ];
-  static String? _mockOnlineOpponentNameCache;
-
   int? _coinsDelta;
   bool _isResolvingBet = false;
   bool _showResultOverlay = false;
   int _overlaySequence = 0;
-  String? _onlineOpponentName;
 
   @override
   void initState() {
     super.initState();
-    if (widget.mode is GameModeOnline) {
-      _onlineOpponentName = _ensureMockOnlineOpponentName();
-    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(gameControllerProvider.notifier).startGame(widget.mode);
     });
-  }
-
-  String _ensureMockOnlineOpponentName() {
-    final cached = _mockOnlineOpponentNameCache;
-    if (cached != null) return cached;
-
-    final index = DateTime.now().millisecond % _mockOnlineOpponentNames.length;
-    final generated = _mockOnlineOpponentNames[index];
-    _mockOnlineOpponentNameCache = generated;
-    return generated;
   }
 
   @override
@@ -107,7 +84,9 @@ class _GamePageState extends ConsumerState<GamePage> {
                               currentPlayer: gameState.currentPlayer,
                               isAiThinking: gameState.isAiThinking,
                               mode: gameState.mode,
-                              onlineOpponentName: _onlineOpponentName,
+                              onlineOpponentName: ref
+                                  .read(gameControllerProvider.notifier)
+                                  .opponentName,
                             ),
                             const SizedBox(height: AppDimensions.spacingM),
                             Expanded(
@@ -140,7 +119,7 @@ class _GamePageState extends ConsumerState<GamePage> {
                           coinsDelta: _coinsDelta,
                           isResolvingBet: _isResolvingBet,
                           onPlayAgain: _resetGame,
-                          onBackToHome: () => context.go('/'),
+                          onBackToHome: () => context.goNamed(AppRouter.home),
                         ),
                     ],
                   ),
@@ -231,7 +210,7 @@ class _GamePageState extends ConsumerState<GamePage> {
     if (gameState.mode is GameModeOnline && currentBet != null) {
       setState(() => _isResolvingBet = true);
 
-      final outcome = _onlineOutcomeFromResult(gameState.result);
+      final outcome = _outcomeFromResult(gameState.result);
       final resolution = await ref
           .read(bettingServiceProvider)
           .resolve(currentBet, outcome);
@@ -255,36 +234,22 @@ class _GamePageState extends ConsumerState<GamePage> {
       }
     }
 
-    final entry = GameHistoryEntry(
-      id: DateTime.now().microsecondsSinceEpoch.toString(),
-      playedAt: DateTime.now(),
+    await ref.read(saveGameResultUseCaseProvider)(
       mode: gameState.mode,
-      outcome: _historyOutcomeFromGameResult(gameState.result, gameState.mode),
+      outcome: _outcomeFromResult(gameState.result),
       playerSide: Player.x,
       moves: gameState.moves,
       betAmount: betAmount,
       coinsWon: coinsWon,
     );
 
-    await ref.read(historyRepositoryProvider).addEntry(entry);
-
     if (mounted) {
       ref.invalidate(historyProvider);
       ref.invalidate(statisticsProvider);
-      ref.invalidate(onlineStatisticsProvider);
     }
   }
 
-  GameOutcome _historyOutcomeFromGameResult(GameResult result, GameMode mode) {
-    return switch (result) {
-      GameResultDraw() => GameOutcome.draw,
-      GameResultWin(:final winner) =>
-        winner == Player.x ? GameOutcome.win : GameOutcome.loss,
-      GameResultOngoing() => GameOutcome.draw,
-    };
-  }
-
-  GameOutcome _onlineOutcomeFromResult(GameResult result) {
+  GameOutcome _outcomeFromResult(GameResult result) {
     return switch (result) {
       GameResultDraw() => GameOutcome.draw,
       GameResultWin(:final winner) =>

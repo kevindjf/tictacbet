@@ -13,7 +13,7 @@ class HistoryPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final historyAsync = ref.watch(historyProvider);
-    final statsAsync = ref.watch(statisticsProvider);
+    final statsAsync = ref.watch(statisticsProvider(onlineOnly: false));
 
     return Scaffold(
       appBar: AppBar(title: Text(context.l10n.history)),

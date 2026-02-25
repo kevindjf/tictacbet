@@ -3,6 +3,7 @@ import 'package:tic_tac_bet/features/history/data/models/game_history_entry_mode
 
 class HistoryLocalDatasource {
   static const String boxName = 'game_history';
+  static const String onlineModeKey = 'online';
 
   Box<GameHistoryEntryModel> get _box {
     if (!Hive.isBoxOpen(boxName)) {

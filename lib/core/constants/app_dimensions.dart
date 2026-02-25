@@ -50,4 +50,7 @@ abstract final class AppDimensions {
   // Buttons
   static const double buttonHeight = 48;
   static const double buttonMinWidth = 120;
+
+  // Scroll clearance for floating action buttons
+  static const double fabClearance = 88;
 }

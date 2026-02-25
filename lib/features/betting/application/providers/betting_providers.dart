@@ -96,9 +96,9 @@ class BettingService {
   PlaceBetUseCase get _placeBet => _ref.read(placeBetUseCaseProvider);
   ResolveBetUseCase get _resolveBet => _ref.read(resolveBetUseCaseProvider);
 
-  Future<Bet?> place(int amount, {int minimumBet = Wallet.minimumBet}) async {
+  Future<Bet?> place(int amount) async {
     final wallet = _ref.read(walletControllerProvider);
-    final result = _placeBet(wallet, amount, minimumBet: minimumBet);
+    final result = _placeBet(wallet, amount);
     return result.when(
       success: (bet) async {
         await _ref.read(walletControllerProvider.notifier).deductBet(amount);
@@ -128,4 +128,37 @@ class BettingService {
 @Riverpod(keepAlive: true)
 BettingService bettingService(Ref ref) {
   return BettingService(ref);
+}
+
+class BetPlacementViewModel {
+  const BetPlacementViewModel({
+    required this.canPlace,
+    required this.clampedAmount,
+    required this.wallet,
+    required this.potentialWinnings,
+  });
+
+  final bool canPlace;
+  final int clampedAmount;
+  final Wallet wallet;
+  final int potentialWinnings;
+}
+
+@riverpod
+BetPlacementViewModel betPlacementViewModel(Ref ref, bool forMatchmaking) {
+  final wallet = ref.watch(walletControllerProvider);
+  final rawAmount = ref.watch(betPlacementAmountProvider(forMatchmaking));
+  const minimum = Wallet.minimumBet;
+
+  final canPlace = wallet.availableBalance >= minimum;
+  final clamped = wallet.availableBalance < minimum
+      ? minimum
+      : rawAmount.clamp(minimum, wallet.availableBalance);
+
+  return BetPlacementViewModel(
+    canPlace: canPlace,
+    clampedAmount: clamped,
+    wallet: wallet,
+    potentialWinnings: clamped * 2,
+  );
 }

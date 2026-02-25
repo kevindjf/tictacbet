@@ -15,7 +15,7 @@ sealed class Wallet with _$Wallet {
   static const int initialBalance = 1000;
   static const int firstBailout = 500;
   static const int subsequentBailout = 200;
-  static const int minimumBet = 10;
+  static const int minimumBet = 1;
 
   int get availableBalance => balance - frozenAmount;
 

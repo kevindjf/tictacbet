@@ -79,7 +79,9 @@ class _GameCoinResultSectionState extends State<GameCoinResultSection>
 
     final betclic = context.betclic;
     final isGain = widget.coinsDelta > 0;
-    final coinColor = isGain ? betclic.coinColor : Colors.redAccent;
+    final coinColor = isGain
+        ? betclic.coinColor
+        : Theme.of(context).colorScheme.error;
 
     return Column(
       mainAxisSize: MainAxisSize.min,

@@ -91,8 +91,7 @@ class GameStatusBar extends ConsumerWidget {
               context.l10n.betAmount(currentBet.amount),
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.w400,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],

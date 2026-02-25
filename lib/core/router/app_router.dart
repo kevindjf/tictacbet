@@ -15,6 +15,15 @@ abstract final class AppRouter {
   static final navigatorKey = GlobalKey<NavigatorState>();
   static const _onboardingPath = '/onboarding';
 
+  static const home = 'home';
+  static const game = 'game';
+  static const lobby = 'lobby';
+  static const createMatch = 'createMatch';
+  static const bet = 'bet';
+  static const history = 'history';
+  static const settings = 'settings';
+  static const onboarding = 'onboarding';
+
   static bool get _isOnboardingCompleted {
     if (!Hive.isBoxOpen('onboarding')) return false;
     final box = Hive.box('onboarding');

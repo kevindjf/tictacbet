@@ -60,6 +60,24 @@ final lobbyProposalsProvider = StreamProvider<List<MatchProposal>>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef LobbyProposalsRef = StreamProviderRef<List<MatchProposal>>;
+String _$lobbyViewModelHash() => r'2afbdee0a6b6fb6536490e394e627e4b0821bfbd';
+
+/// See also [lobbyViewModel].
+@ProviderFor(lobbyViewModel)
+final lobbyViewModelProvider =
+    AutoDisposeProvider<AsyncValue<LobbyViewModel>>.internal(
+      lobbyViewModel,
+      name: r'lobbyViewModelProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$lobbyViewModelHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef LobbyViewModelRef = AutoDisposeProviderRef<AsyncValue<LobbyViewModel>>;
 String _$currentMockSessionHash() =>
     r'51d947a0846c244d61ac827ccc937d86175e5ead';
 

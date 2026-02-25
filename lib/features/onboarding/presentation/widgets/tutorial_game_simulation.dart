@@ -33,6 +33,18 @@ class TutorialGameSimulation extends StatefulWidget {
 }
 
 class _TutorialGameSimulationState extends State<TutorialGameSimulation> {
+  // Script: X wins top row — (0,0) → (0,1) → (0,2)
+  static const _xMove1 = (0, 0);
+  static const _oMove1 = (1, 1);
+  static const _xMove2 = (0, 1);
+  static const _oMove2 = (2, 0);
+  static const _xMove3 = (0, 2);
+  static const List<(int, int)> _winningLine = [_xMove1, _xMove2, _xMove3];
+
+  static const _aiThinkDelay = Duration(milliseconds: 650);
+  static const _winDisplayDelay = Duration(milliseconds: 500);
+  static const _victoryDelay = Duration(milliseconds: 1400);
+
   Board _board = Board.empty();
   GameResult _result = const GameResult.ongoing();
   bool _showVictory = false;
@@ -78,31 +90,31 @@ class _TutorialGameSimulationState extends State<TutorialGameSimulation> {
       onClickTarget: (target) {
         switch (target.identify) {
           case 'move1':
-            _placeX(0, 0);
+            _placeX(_xMove1.$1, _xMove1.$2);
             Future.delayed(
-              const Duration(milliseconds: 650),
-              () => _placeO(1, 1),
+              _aiThinkDelay,
+              () => _placeO(_oMove1.$1, _oMove1.$2),
             );
           case 'move2':
-            _placeX(0, 1);
+            _placeX(_xMove2.$1, _xMove2.$2);
             Future.delayed(
-              const Duration(milliseconds: 650),
-              () => _placeO(2, 0),
+              _aiThinkDelay,
+              () => _placeO(_oMove2.$1, _oMove2.$2),
             );
           case 'move3':
-            _placeX(0, 2);
+            _placeX(_xMove3.$1, _xMove3.$2);
         }
       },
       onFinish: () {
-        Future.delayed(const Duration(milliseconds: 500), () {
+        Future.delayed(_winDisplayDelay, () {
           if (!mounted) return;
           setState(() {
-            _result = const GameResult.win(
+            _result = GameResult.win(
               winner: Player.x,
-              winningLine: [(0, 0), (0, 1), (0, 2)],
+              winningLine: _winningLine,
             );
           });
-          Future.delayed(const Duration(milliseconds: 1400), () {
+          Future.delayed(_victoryDelay, () {
             if (!mounted) return;
             setState(() => _showVictory = true);
           });

@@ -3,11 +3,8 @@ import 'package:tic_tac_bet/features/betting/domain/entities/bet.dart';
 import 'package:tic_tac_bet/features/betting/domain/entities/wallet.dart';
 
 class PlaceBetUseCase {
-  Result<Bet> call(
-    Wallet wallet,
-    int amount, {
-    int minimumBet = Wallet.minimumBet,
-  }) {
+  Result<Bet> call(Wallet wallet, int amount) {
+    const minimumBet = Wallet.minimumBet;
     if (amount < minimumBet) {
       return Result.failure('Minimum bet is $minimumBet coins');
     }

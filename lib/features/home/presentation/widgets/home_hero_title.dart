@@ -16,6 +16,29 @@ class HomeHeroTitleData {
     this.showBolt = false,
   });
 
+  factory HomeHeroTitleData.fromStrings({
+    required String title,
+    required String description,
+    required Color accent,
+    required Color secondary,
+    bool bolt = false,
+  }) {
+    final lines = title.split('\n');
+    final line1 = lines.isNotEmpty ? lines.first : title;
+    final line2 = lines.length > 1 ? lines.sublist(1).join(' ') : '';
+    final subtitleWords = description.split(' ');
+    final splitIndex = subtitleWords.length > 4 ? 4 : subtitleWords.length;
+    return HomeHeroTitleData(
+      line1: line1,
+      line2: line2,
+      subtitleLine1: subtitleWords.take(splitIndex).join(' '),
+      subtitleLine2: subtitleWords.skip(splitIndex).join(' '),
+      accentColor: accent,
+      secondaryAccentColor: secondary,
+      showBolt: bolt,
+    );
+  }
+
   final String line1;
   final String line2;
   final String subtitleLine1;

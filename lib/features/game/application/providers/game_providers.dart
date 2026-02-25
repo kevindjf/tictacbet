@@ -32,11 +32,25 @@ AiMoveUseCase aiMoveUseCase(Ref ref) {
 
 @riverpod
 class GameController extends _$GameController {
+  static const _mockOpponentNames = [
+    'Alex',
+    'Nina',
+    'Sam',
+    'Léo',
+    'Maya',
+    'Yanis',
+  ];
+
   Timer? _aiTimer;
 
   /// Difficulty randomly assigned when an online game starts, simulating the
   /// remote opponent with an AI of unknown strength.
   Difficulty? _onlineAiDifficulty;
+
+  /// Name randomly assigned to the mock online opponent for the current game.
+  String? _opponentName;
+
+  String? get opponentName => _opponentName;
 
   CheckWinnerUseCase get _checkWinner => ref.read(checkWinnerUseCaseProvider);
   MakeMoveUseCase get _makeMove => ref.read(makeMoveUseCaseProvider);
@@ -55,6 +69,8 @@ class GameController extends _$GameController {
     if (mode is GameModeOnline) {
       final difficulties = Difficulty.values;
       _onlineAiDifficulty = difficulties[Random().nextInt(difficulties.length)];
+      _opponentName =
+          _mockOpponentNames[Random().nextInt(_mockOpponentNames.length)];
     }
     state = GameState.initial(mode);
   }

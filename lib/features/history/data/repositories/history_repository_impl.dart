@@ -11,7 +11,7 @@ class HistoryRepositoryImpl implements HistoryRepository {
   @override
   Future<List<GameHistoryEntry>> getHistory({bool onlineOnly = false}) async {
     final models = onlineOnly
-        ? await _datasource.getByMode('online')
+        ? await _datasource.getByMode(HistoryLocalDatasource.onlineModeKey)
         : await _datasource.getAll();
     return models.map((m) => m.toDomain()).toList();
   }

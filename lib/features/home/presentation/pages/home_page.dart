@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
+import 'package:tic_tac_bet/core/router/app_router.dart';
 import 'package:tic_tac_bet/core/theme/app_colors.dart';
 import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 import 'package:tic_tac_bet/features/game/domain/entities/game_mode.dart';
@@ -271,7 +272,7 @@ class _HomeGameModeCarousel extends StatelessWidget {
             description: context.l10n.cashBattleDesc,
             buttonLabel: context.l10n.cashBattlePlay,
             accentColor: AppColors.neonRed,
-            onTap: () => context.pushNamed('lobby'),
+            onTap: () => context.pushNamed(AppRouter.lobby),
           ),
         ),
         HomeCardSlot(
@@ -281,7 +282,7 @@ class _HomeGameModeCarousel extends StatelessWidget {
             buttonLabel: context.l10n.cyberBotPlay,
             accentColor: AppColors.neonBlue,
             onTap: () => context.pushNamed(
-              'game',
+              AppRouter.game,
               extra: GameMode.vsAi(difficulty: difficulty),
             ),
           ),
@@ -293,7 +294,7 @@ class _HomeGameModeCarousel extends StatelessWidget {
             buttonLabel: context.l10n.duel1v1Play,
             accentColor: AppColors.neonGold,
             onTap: () =>
-                context.pushNamed('game', extra: const GameMode.vsLocal()),
+                context.pushNamed(AppRouter.game, extra: const GameMode.vsLocal()),
           ),
         ),
       ],
@@ -302,49 +303,23 @@ class _HomeGameModeCarousel extends StatelessWidget {
 }
 
 List<HomeHeroTitleData> _buildHomeHeroDataList(BuildContext context) => [
-  _buildHomeHeroData(
+  HomeHeroTitleData.fromStrings(
     title: context.l10n.cashBattle,
     description: context.l10n.cashBattleDesc,
     accent: AppColors.neonGold,
     secondary: AppColors.neonRedLight,
     bolt: true,
   ),
-  _buildHomeHeroData(
+  HomeHeroTitleData.fromStrings(
     title: context.l10n.cyberBot,
     description: context.l10n.cyberBotDesc,
     accent: AppColors.neonBlue,
     secondary: AppColors.neonBlueLight,
-    bolt: false,
   ),
-  _buildHomeHeroData(
+  HomeHeroTitleData.fromStrings(
     title: context.l10n.duel1v1,
     description: context.l10n.duel1v1Desc,
     accent: AppColors.neonGold,
     secondary: AppColors.neonGoldLight,
-    bolt: false,
   ),
 ];
-
-HomeHeroTitleData _buildHomeHeroData({
-  required String title,
-  required String description,
-  required Color accent,
-  required Color secondary,
-  required bool bolt,
-}) {
-  final lines = title.split('\n');
-  final line1 = lines.isNotEmpty ? lines.first : title;
-  final line2 = lines.length > 1 ? lines.sublist(1).join(' ') : '';
-  final subtitleWords = description.split(' ');
-  final splitIndex = subtitleWords.length > 4 ? 4 : subtitleWords.length;
-
-  return HomeHeroTitleData(
-    line1: line1,
-    line2: line2,
-    subtitleLine1: subtitleWords.take(splitIndex).join(' '),
-    subtitleLine2: subtitleWords.skip(splitIndex).join(' '),
-    accentColor: accent,
-    secondaryAccentColor: secondary,
-    showBolt: bolt,
-  );
-}

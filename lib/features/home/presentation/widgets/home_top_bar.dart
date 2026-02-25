@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
+import 'package:tic_tac_bet/core/router/app_router.dart';
 import 'package:tic_tac_bet/core/extensions/betclic_theme_context_extension.dart';
 import 'package:tic_tac_bet/core/theme/app_colors.dart';
 import 'package:tic_tac_bet/core/theme/app_typography_theme_extension.dart';
@@ -92,13 +93,13 @@ class HomeTopBar extends ConsumerWidget {
             HomeTopBarIconButton(
               icon: Icons.history,
               accentColor: accentColor,
-              onPressed: () => context.pushNamed('history'),
+              onPressed: () => context.pushNamed(AppRouter.history),
             ),
             const SizedBox(width: AppDimensions.spacingXS),
             HomeTopBarIconButton(
               icon: Icons.settings,
               accentColor: accentColor,
-              onPressed: () => context.pushNamed('settings'),
+              onPressed: () => context.pushNamed(AppRouter.settings),
             ),
           ],
         ),

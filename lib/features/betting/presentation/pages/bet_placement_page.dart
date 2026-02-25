@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tic_tac_bet/core/constants/app_dimensions.dart';
+import 'package:tic_tac_bet/core/router/app_router.dart';
 import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 import 'package:tic_tac_bet/core/widgets/app_pattern_background.dart';
 import 'package:tic_tac_bet/features/betting/application/providers/betting_providers.dart';
@@ -16,17 +17,9 @@ class BetPlacementPage extends ConsumerWidget {
 
   final bool forMatchmaking;
 
-  int _minimumBet() => forMatchmaking ? 1 : Wallet.minimumBet;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final minimumBet = _minimumBet();
-    final wallet = ref.watch(walletControllerProvider);
-    final rawBetAmount = ref.watch(betPlacementAmountProvider(forMatchmaking));
-    final canPlaceBet = wallet.availableBalance >= minimumBet;
-    final clampedBetAmount = wallet.availableBalance < minimumBet
-        ? minimumBet
-        : rawBetAmount.clamp(minimumBet, wallet.availableBalance);
+    final vm = ref.watch(betPlacementViewModelProvider(forMatchmaking));
 
     return Scaffold(
       appBar: AppBar(title: Text(context.l10n.placeBet)),
@@ -35,10 +28,7 @@ class BetPlacementPage extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.all(AppDimensions.spacingM),
             child: _BetPlacementBody(
-              wallet: wallet,
-              minimumBet: minimumBet,
-              canPlaceBet: canPlaceBet,
-              clampedBetAmount: clampedBetAmount,
+              vm: vm,
               forMatchmaking: forMatchmaking,
             ),
           ),
@@ -50,51 +40,41 @@ class BetPlacementPage extends ConsumerWidget {
 
 class _BetPlacementBody extends ConsumerWidget {
   const _BetPlacementBody({
-    required this.wallet,
-    required this.minimumBet,
-    required this.canPlaceBet,
-    required this.clampedBetAmount,
+    required this.vm,
     required this.forMatchmaking,
   });
 
-  final Wallet wallet;
-  final int minimumBet;
-  final bool canPlaceBet;
-  final int clampedBetAmount;
+  final BetPlacementViewModel vm;
   final bool forMatchmaking;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
-        CoinBalance(balance: wallet.balance),
+        CoinBalance(balance: vm.wallet.balance),
         const Spacer(),
         BetSlider(
-          currentBet: clampedBetAmount,
-          maxBet: wallet.availableBalance,
-          minimumBet: minimumBet,
-          multiplier: 1.0,
+          currentBet: vm.clampedAmount,
+          maxBet: vm.wallet.availableBalance,
+          minimumBet: Wallet.minimumBet,
+          potentialWinnings: vm.potentialWinnings,
+          enabled: vm.canPlace,
           onChanged: (value) =>
-              ref
-                      .read(betPlacementAmountProvider(forMatchmaking).notifier)
-                      .state =
-                  value,
+              ref.read(betPlacementAmountProvider(forMatchmaking).notifier).state = value,
         ),
         const Spacer(),
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed:
-                canPlaceBet && clampedBetAmount <= wallet.availableBalance
+            onPressed: vm.canPlace
                 ? () => _submitBetAndMaybeNavigate(
-                    ref,
-                    context,
-                    forMatchmaking: forMatchmaking,
-                    betAmount: clampedBetAmount,
-                    minimumBet: minimumBet,
-                  )
+                      ref,
+                      context,
+                      forMatchmaking: forMatchmaking,
+                      betAmount: vm.clampedAmount,
+                    )
                 : null,
-            child: Text(context.l10n.betAmount(clampedBetAmount)),
+            child: Text(context.l10n.betAmount(vm.clampedAmount)),
           ),
         ),
       ],
@@ -107,11 +87,10 @@ Future<void> _submitBetAndMaybeNavigate(
   BuildContext context, {
   required bool forMatchmaking,
   required int betAmount,
-  required int minimumBet,
 }) async {
   final bet = await ref
       .read(bettingServiceProvider)
-      .place(betAmount, minimumBet: minimumBet);
+      .place(betAmount);
 
   if (bet == null || !context.mounted) return;
 
@@ -124,9 +103,9 @@ Future<void> _submitBetAndMaybeNavigate(
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(context.l10n.waitingForOpponent)));
-    context.goNamed('lobby');
+    context.goNamed(AppRouter.lobby);
     return;
   }
 
-  context.pushNamed('game', extra: const GameMode.online());
+  context.pushNamed(AppRouter.game, extra: const GameMode.online());
 }

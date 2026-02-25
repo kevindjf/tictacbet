@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tic_tac_bet/core/router/app_router.dart';
 import 'package:tic_tac_bet/core/utils/l10n_extension.dart';
 import 'package:tic_tac_bet/features/onboarding/application/providers/onboarding_providers.dart';
 
@@ -25,6 +26,6 @@ class ReplayTutorialTile extends ConsumerWidget {
   Future<void> _onReplayTutorialTap(BuildContext context, WidgetRef ref) async {
     await ref.read(onboardingControllerProvider.notifier).reset();
     if (!context.mounted) return;
-    context.pushNamed('onboarding');
+    context.pushNamed(AppRouter.onboarding);
   }
 }
