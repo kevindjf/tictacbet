@@ -1,225 +1,147 @@
-# Tic Tac Bet
+# Tic Tac Bet 🎲
 
-Tic-Tac-Toe (morpion) en Flutter avec mécaniques de paris, streaks, historique, onboarding interactif et architecture prête pour un mode online (matchmaking mocké aujourd’hui, migration Supabase documentée).
+<div align="center">
+  <img src="./assets/images/app_icon.png" alt="Tic Tac Bet Logo" width="200"/>
+</div>
 
-## Aperçu
+Une application de morpion avec système de paris développée avec Flutter.
 
-Le projet combine deux expériences :
+## ✨ Fonctionnalités
 
-- `Local / entraînement` : jouer contre l’IA (plusieurs difficultés) ou en local à 2
-- `Battle / compétition` : flow de mise + lobby matchmaking (mock), en préparation pour une implémentation Supabase temps réel
+### 🎯 Modes de jeu
 
-Le but du repo est double :
+- **Entraînement local** : jouer contre l'IA (facile / moyen / difficile) ou à 2 joueurs sur le même appareil
+- **Battle / compétition** : poser une mise avant la partie et affronter un adversaire via le matchmaking
 
-- fournir une app Flutter propre et testable (Clean Architecture + feature-first)
-- préparer la migration du mode online vers Supabase sans refaire la structure
+### 🤖 Intelligence artificielle
 
-## Fonctionnalités principales
+- Trois niveaux de difficulté : `easy`, `medium`, `hard`
+- Mode `hard` basé sur l'algorithme **Minimax**
+- Détection automatique victoire / égalité
 
-### Gameplay
+### 💰 Betting & progression
 
-- Grille 3x3, détection victoire / égalité
-- IA `easy / medium / hard` (hard = minimax)
-- Mode local 2 joueurs
-- Animations de coups et ligne gagnante
+- Wallet local avec solde de coins
+- Mise configurable avant chaque partie
+- Résolution automatique des gains et pertes
+- Historique complet des parties avec statistiques
 
-### Betting / progression
+### 🎓 Onboarding interactif
 
-- Wallet local (coins)
-- Mise avant partie
-- Résolution des gains/pertes
-- Historique des parties + statistiques
+- Tutoriel guidé au premier lancement
+- Simulation de partie avec **coach marks** animés
+- Récompense de bienvenue (1 000 coins)
+- Relançable depuis les paramètres
 
-### Onboarding
+### 🏠 Home & UX
 
-- Tutoriel au premier lancement
-- Simulation interactive avec coach marks
-- Persistance du statut onboarding
-- Relançable depuis les settings
-
-### Home / UX
-
-- Home redesign avec cards animées
-- Titre hero dynamique lié au slider
+- Cards animées par mode de jeu
 - Fond visuel animé (crossfade + parallax + Ken Burns)
-- Background pattern (`GridPatternPainter`) sur les écrans hors home
+- Pattern graphique sur les écrans secondaires
 
-### Matchmaking (mock)
+### 🔁 Matchmaking (mock)
 
-- Lobby mock avec propositions de matchs
-- Création / acceptation d’une proposition
-- Attente d’adversaire simulée
-- Architecture prête pour remplacement par Supabase
+- Lobby avec propositions de matchs
+- Création et acceptation d'une proposition
+- Attente d'adversaire simulée
+- Architecture prête pour remplacement par Supabase temps réel
 
-## Statut du projet
+## 🎬 Démonstrations
 
-- `Domaine / UI / persistance locale` : ✅ en place
-- `Onboarding` : ✅ en place + tests unitaires onboarding
-- `Battle online réel (Supabase)` : ⏳ non branché (mock en place)
+### Onboarding & simulation
 
-## Stack technique
+<img src="./doc/images/onboarding.gif" alt="Démo onboarding" height="500"/>
 
-- `Flutter`
-- `Riverpod` + `riverpod_generator`
-- `Freezed` / `json_serializable`
-- `Hive CE` (persistance locale)
-- `GoRouter`
-- `flutter_animate`
-- `tutorial_coach_mark`
-- `google_fonts`
-- `Supabase Flutter` (dépendance déjà présente, intégration online à venir)
+### Home avec Kenburns / Parallax
 
-## Architecture
+<img src="./doc/images/home.gif" alt="Home" height="500"/>
+
+### Parcours jusqu'à victoire
+
+<img src="doc/images/winpart.gif" alt="Partie gagnante" height="500"/>
+
+### Historique & statistiques
+
+<img src="doc/images/history.png" alt="Démo historique" height="500"/> -->
+
+### Paramètres
+
+<img src="doc/images/settings.png" alt="Démo historique" height="500"/> -->
+
+## 📦 Dépendances principales
+
+- **[flutter_riverpod](https://pub.dev/packages/flutter_riverpod)** + **[riverpod_generator](https://pub.dev/packages/riverpod_generator)** : gestion d'état réactive avec code generation
+- **[freezed](https://pub.dev/packages/freezed)** + **[json_serializable](https://pub.dev/packages/json_serializable)** : entités immuables et unions scellées
+- **[hive_ce](https://pub.dev/packages/hive_ce)** : persistance locale NoSQL
+- **[go_router](https://pub.dev/packages/go_router)** : navigation déclarative
+- **[flutter_animate](https://pub.dev/packages/flutter_animate)** : animations fluides
+- **[tutorial_coach_mark](https://pub.dev/packages/tutorial_coach_mark)** : coach marks interactifs
+- **[google_fonts](https://pub.dev/packages/google_fonts)** : typographie
+- **[supabase_flutter](https://pub.dev/packages/supabase_flutter)** : client Supabase (intégration online à venir)
+
+## 🧪 Tests
+
+- Tests unitaires sur tous les **use cases** du domaine
+- Tests des **notifiers** Riverpod
+- Mocking via `mocktail`
+- Tests d'onboarding inclus
+
+```bash
+flutter test
+flutter analyze
+```
+
+## 🏗️ Architecture
 
 Le projet suit une approche **Clean Architecture + feature-first**.
-
-Exemple de structure :
 
 ```text
 lib/
 ├── core/                  # thème, router, services, widgets transverses
 ├── features/
 │   ├── game/
-│   │   ├── domain/
-│   │   ├── data/
-│   │   ├── application/
-│   │   └── presentation/
+│   │   ├── domain/        # entités, use cases, interfaces repository
+│   │   ├── data/          # implémentations repository, sources de données
+│   │   ├── application/   # notifiers Riverpod
+│   │   └── presentation/  # widgets, pages
 │   ├── betting/
 │   ├── history/
 │   ├── onboarding/
 │   ├── matchmaking/
 │   ├── home/
 │   └── settings/
-└── l10n/
+└── l10n/                  # ARB EN + FR
 ```
 
-## Documentation du projet
+> Le **domain layer est pur Dart** — aucun import Flutter dans `domain/`.
 
-Le repo contient plusieurs documents utiles :
+## 💡 Évolutions possibles
 
-- `doc/ARCHITECTURE.md` : vision globale, architecture, plan d’implémentation
-- `doc/CONVENTIONS.md` : conventions de code/UI (Riverpod generator, naming, theming, i18n, etc.)
-- `doc/RULES.md` : règles non négociables + checklist qualité
-- `doc/EPIC_MATCHMAKING_SUPABASE.md` : epic + stories pour la suite online Supabase
+### 🌐 Multijoueur en ligne (Supabase)
 
-## Prérequis
+- Remplacement du mock par Supabase Realtime
+- Matchmaking basé sur les cotes (ELO)
+- Résolution des paris côté serveur (edge functions)
 
-- Flutter SDK (version compatible avec le `sdk` Dart du `pubspec.yaml`)
-- Xcode (iOS, macOS) et/ou Android SDK
-- Un émulateur Android (AVD) si tu veux tester sur Android
+### 🔐 Authentification
 
-## Installation
+- Social Auth (Google, Apple)
+- Profil utilisateur et synchronisation du wallet
+- Historique cross-device
 
-```bash
-flutter pub get
-flutter gen-l10n
-dart run build_runner build --delete-conflicting-outputs
-```
+### 🏆 Classements & tournois
 
-## Lancer l’application
+- Leaderboard global par gains
+- Tournois hebdomadaires
+- Badges et achievements
 
-### Standard
+### 📈 Engagement
 
-```bash
-flutter run
-```
+- Défis quotidiens avec bonus de coins
+- Notifications push pour les matchs en attente
+- Système de streaks et multiplicateurs
+- Mise en place d'un analytics
 
-### Android emulator (outil global `flutteremu`)
-
-Si tu as installé l’outil global `flutteremu` (script local machine) :
-
-```bash
-flutteremu list
-flutteremu start --wait
-flutteremu run
-```
-
-Par défaut, il peut être configuré sur `Pixel_8_API_35`.
-
-## Commandes utiles
-
-```bash
-# Génération de code (freezed / riverpod / json)
-dart run build_runner build --delete-conflicting-outputs
-
-# L10n
-flutter gen-l10n
-
-# Analyse statique
-dart analyze
-
-# Tests
-flutter test
-
-# Formatage
-dart format .
-```
-
-## Tests
-
-Le projet contient des tests unitaires sur le domaine (`game`, `betting`) et désormais onboarding :
-
-- logique de grille / moves / victoire
-- IA (minimax + validité des coups)
-- use cases betting
-- navigation `OnboardingStep`
-- repository onboarding (persistance flag)
-- controller/providers onboarding
-
-Lancer tous les tests :
-
-```bash
-flutter test
-```
-
-## Internationalisation
-
-- Langues supportées : `FR` + `EN`
-- Au premier lancement : la langue du téléphone est utilisée
-- Si l’utilisateur change la langue dans les settings, le choix est persisté
-
-## Design & Theming
-
-- Dark + light themes
-- Tokens centralisés (`AppTheme`, `BetclicTheme`, `AppDimensions`)
-- Règle projet : pas de couleurs/styles hardcodés dans les widgets
-
-## Online / Supabase (roadmap)
-
-Le mode online réel n’est **pas encore branché** à Supabase.
-
-Ce qui existe :
-
-- flow UI/UX de lobby mocké
-- architecture `matchmaking` séparée
-- documentation de migration
-
-Ce qui reste à faire :
-
-- auth Supabase
-- matchmaking réel (propositions / acceptation)
-- session de jeu temps réel
-- synchronisation des moves et résolution serveur
-
-Voir `doc/EPIC_MATCHMAKING_SUPABASE.md`.
-
-## Contribuer (workflow recommandé)
-
-1. Lire `doc/ARCHITECTURE.md`
-2. Lire `doc/CONVENTIONS.md`
-3. Respecter `doc/RULES.md`
-4. Lancer `dart analyze` + `flutter test` avant commit
-
-## Git / branches
-
-Le repo a été développé par itérations avec commits thématiques (UI home, onboarding, matchmaking mock, refactor Riverpod generator, etc.).
-
-Exemple de convention de messages :
-
-- `feat: ...`
-- `fix: ...`
-- `chore: ...`
-
-## Licence / contexte
+## 📄 Licence / contexte
 
 Projet interne / exercice technique (non publié sur pub.dev).
