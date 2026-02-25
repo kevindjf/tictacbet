@@ -108,6 +108,15 @@ class BettingService {
     );
   }
 
+  void cancelPendingBetIfAbandoned({
+    required bool isOnline,
+    required bool isGameOver,
+  }) {
+    if (!isOnline || isGameOver) return;
+    if (_ref.read(currentBetProvider) == null) return;
+    _ref.read(currentBetProvider.notifier).clear();
+  }
+
   Future<BetResolution?> resolve(Bet bet, GameOutcome outcome) async {
     final resolution = _resolveBet(bet, outcome);
 

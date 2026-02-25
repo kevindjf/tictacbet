@@ -166,7 +166,11 @@ class _GamePageState extends ConsumerState<GamePage> {
   }
 
   void _handleBack() {
-    _clearPendingOnlineBetIfNeeded();
+    final state = ref.read(gameControllerProvider);
+    ref.read(bettingServiceProvider).cancelPendingBetIfAbandoned(
+      isOnline: state.mode is GameModeOnline,
+      isGameOver: state.isGameOver,
+    );
     context.pop();
   }
 
@@ -258,10 +262,4 @@ class _GamePageState extends ConsumerState<GamePage> {
     };
   }
 
-  void _clearPendingOnlineBetIfNeeded() {
-    final state = ref.read(gameControllerProvider);
-    if (state.mode is! GameModeOnline || state.isGameOver) return;
-    if (ref.read(currentBetProvider) == null) return;
-    ref.read(currentBetProvider.notifier).clear();
-  }
 }
